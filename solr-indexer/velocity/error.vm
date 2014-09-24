@@ -1,0 +1,11 @@
+#**
+ *  如果有错误代码，显示错误信息
+ *#
+
+## Show Error Message, if any
+## Usually rendered inside div class=error
+
+#if( $response.response.error.code )
+  <h1>&#x5BF9;&#x4E0D;&#x8D77;&#xFF0C;&#x6211;&#x9519;&#x4E86;:( $response.response.error.code</h1>
+  $response.response.error.msg
+#end
