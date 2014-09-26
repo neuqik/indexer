@@ -1,7 +1,5 @@
 #**
- *  Global macros used by other templates.
- *  This file must be named VM_global_library.vm
- *  in order for Velocity to find it.
+ *  名字不能变VM_global_library.vm
  *#
 
 #macro(param $key)$request.params.get($key)#end
