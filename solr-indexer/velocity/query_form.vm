@@ -10,12 +10,12 @@
         &#x68C0;&#x7D22;:
         <input type="text" id="q" name="q" value="$!esc.html($params.get('q'))"/> ## 将不存在的对象强制显示成空白
         <input type="submit" id="querySubmit" value="&#x6211;&#x67E5;"/>
-        <input type="reset"/>
+        <input type="reset" value="&#x91CD;&#x7F6E;"/>
       </span>
       <div class="query-boost">
         <span #annTitle("Add the boost function &bf=price to the query")>
-          <input type="checkbox" name="bf" value="price"
-            #if($request.params.get('bf') == 'price')checked="true"#end
+          <input type="checkbox" name="bf" value="AKA061"
+            #if($request.params.get('bf') == 'AKA061')checked="true"#end
           >
             &#x836F;&#x54C1;&#x540D;&#x4F18;&#x5148;
           </input>
@@ -42,7 +42,7 @@
         #set($previous_fq_count=$velocityCount - 1)
         #if($fq != '')
           &gt;
-          <a style="{text-decoration: line-through;}"
+          <a style="{text-decoration: underline;}"
             href="#url_for_filters($request.params.getParams('fq').subList(0,$previous_fq_count))"
           >$fq</a>
         #end

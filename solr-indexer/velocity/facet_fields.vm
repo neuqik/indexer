@@ -10,7 +10,7 @@
   #foreach($field in $response.facetFields)
     ## Hide facets without value
     #if($field.values.size() > 0)
-      <span class="facet-field">$fielddisplay.get($field.name)</span>
+      <span class="facet-field">$field.name</span>
       <ul>
         #foreach($facet in $field.values)
           <li>

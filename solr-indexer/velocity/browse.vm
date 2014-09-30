@@ -10,11 +10,11 @@
 
 #parse('query_form.vm')
 #parse('did_you_mean.vm')
-## ����������
+##
 <div class="navigators">
   #parse("facets.vm")
 </div>
-## ������ҳ
+## 
 <div class="pagination">
   #parse("pagination_top.vm")
 </div>
@@ -24,7 +24,7 @@
   #parse("error.vm")
 
 
-## ��Ⱦ���ʵ��ƥ�������
+## 
 <div class="results">
   #parse("results_list.vm")
 </div>

@@ -1,11 +1,11 @@
 #**
-*  每个匹配文档调用，调用product_doc, join_doc or richtext_doc中的一个，取决于doc的内容
+*  
 *#
-## 设置文档ID
+## 
 #set($docId = $doc.getFieldValue('BAZ001'))
 <div class="result-document">
 	#parse("chemical_doc.vm")
-    #** 是否有名字域
+    #** 
     #if($doc.getFieldValue('name'))
         #parse("product_doc.vm")
         ## Has a "compName_s" field ?

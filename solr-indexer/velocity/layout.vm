@@ -1,5 +1,5 @@
 #**
- *  HTMLÒ³Ãæ²¼¾Ö
+ *  HTML
  *#
 
 <html>
@@ -7,7 +7,6 @@
   #parse("head.vm")
 </head>
   <body>
-  
 	<div id="admin"><a href="#url_root/#/#core_name">&#x767B;&#x5F55;</a>   <a href="#url_root/#/#core_name">&#x540E;&#x53F0;</a></div>
     <div id="header">
       #parse("header.vm")

@@ -1,12 +1,13 @@
 #**
  * 显示药品
  *#
-#set($BKA249=$doc.getFieldValue('BKA249'))
+#set($BKA249=$doc.getFieldValue('四级分类'))
+
 <div class="result-title"><a href=""><b>#field('AKA061')</b></a>  <span class="mlt">   #if($params.getBool('mlt', false) == false)<a href="#lensNoQ&mlt=true&q=EncodeUtf8('BKA249:$BKA249');" id="a_$docId">&#x76F8;&#x4F3C;&#x5206;&#x7C7B;</a>#end</span></div>
 ##显示
 <div>&#x836F;&#x54C1;&#x7F16;&#x7801;: #field('AKA060')</div>
-<div>&#x6536;&#x8D39;&#x7C7B;&#x522B;: #field('AKA063')</div>
-<div>&#x6536;&#x8D39;&#x7B49;&#x7EA7;: #field('AKA065')</div>
+<div>&#x6536;&#x8D39;&#x7C7B;&#x522B;: #field('收费类别')</div>
+<div>&#x6536;&#x8D39;&#x7B49;&#x7EA7;: #field('收费等级')</div>
 <div>&#x6458;&#x8981;: #field('text')</div>
 <div class="mlt">
   #set($mlt = $mltResults.get($BAZ001))
@@ -27,7 +28,7 @@
   #end
 </div>
 <script type="text/javascript">
-	$('#a_$docId').attr('href','?&mlt=true&q=BKA249:'+EncodeUtf8('$BKA249')); 
+	$('#a_$docId').attr('href','?&mlt=true&q='+EncodeUtf8('四级分类:$BKA249')); 
 </script>
 
 #parse('debug.vm')

@@ -29,7 +29,7 @@ public class ChemicalIndexer {
 			solr.commit();
 			// connect to database
 			conn = JDBCUtil.getConnection();
-			String sql = "SELECT * FROM KA02 ";
+			String sql = "SELECT AAA027,AAB034,AAE011,AAE013,AAE030,AAE031,AAE036,fun_getdesc('AAE100',AAE100) AAE100,AKA020,fun_getdesc('AKA022',AKA022) AKA022,AKA060,AKA061, fun_getdesc('aka063',AKA063) AKA063, fun_getdesc('aka065',AKA065) AKA065,AKA070,AKA074,AKA109,AKB020,fun_getdesc('ALA011',ALA011) ALA011,fun_getdesc('AMA011',AMA011) AMA011,BAZ001,BKA083,fun_getdesc('BKA084',BKA084) BKA084,BKA087,fun_getdesc('BKA204',BKA204) BKA204,fun_getdesc('BKA209',BKA209) BKA209,fun_getdesc('BKA210',BKA210) BKA210,fun_getdesc('BKA217',BKA217) BKA217,BKA219,BKA221,BKA222,BKA225,fun_getdesc('BKA226',BKA226) BKA226,fun_getdesc('BKA228',BKA228) BKA228,BKA231,BKA232,BKA233,BKA234,BKA235,BKA236,BKA237,BKA240,BKA246,BKA247,BKA248,BKA249,BKA605,fun_getdesc('BKA608',BKA608) BKA608,BKA610,BKA620,BKA613,BKA638,fun_getdesc('BKC173',BKC173) BKC173 FROM KA02 ";
 			List<Map<String, Object>> result = JDBCUtil.executeQuery(sql, conn,
 					null);
 			long mid = System.currentTimeMillis();
@@ -59,7 +59,6 @@ public class ChemicalIndexer {
 				ch.setAKA063(String.valueOf(row.get("AKA063")));
 				ch.setAKA065(String.valueOf(row.get("AKA065")));
 				ch.setAKA070(String.valueOf(row.get("AKA070")));
-				ch.setAKA074(String.valueOf(row.get("AKA074")));
 				ch.setAKA074(String.valueOf(row.get("AKA074")));
 				ch.setAKA109(String.valueOf(row.get("AKA109")));
 				ch.setAKB020(String.valueOf(row.get("AKB020")));

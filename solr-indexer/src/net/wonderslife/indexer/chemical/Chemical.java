@@ -15,19 +15,19 @@ public class Chemical {
 	String AKA020;
 	@Field
 	String BKA605;
-	@Field
+	@Field("收费类别")
 	String AKA063;
-	@Field
+	@Field("收费等级")
 	String AKA065;
 	@Field
 	String AKA070;
 	@Field
 	String AKA074;
-	@Field
+	@Field("院内制剂")
 	String BKA084;
 	@Field
 	String AKB020;
-	@Field
+	@Field("特药")
 	String BKA608;
 	@Field
 	String AKA109;
@@ -35,17 +35,17 @@ public class Chemical {
 	String BKA620;
 	@Field
 	String BKA613;
-	@Field
+	@Field("需要审批")
 	String BKC173;
-	@Field
+	@Field("工伤使用")
 	String ALA011;
-	@Field
+	@Field("生育使用")
 	String AMA011;
-	@Field
+	@Field("开始日期")
 	String AAE030;
 	@Field
 	String AAE031;
-	@Field
+	@Field("有效")
 	String AAE100;
 	@Field
 	String AAE013;
@@ -57,7 +57,7 @@ public class Chemical {
 	String AAE011;
 	@Field
 	String AAE036;
-	@Field
+	@Field("中心使用")
 	String BKA204;
 	@Field
 	String BKA610;
@@ -65,15 +65,15 @@ public class Chemical {
 	String BKA083;
 	@Field
 	String BKA087;
-	@Field
+	@Field("基本医疗使用")
 	String AKA022;
 	@Field
 	String BKA638;
-	@Field
+	@Field("账户可支付")
 	String BKA209;
-	@Field
+	@Field("门诊统筹可用")
 	String BKA210;
-	@Field
+	@Field("药店可使用")
 	String BKA217;
 	@Field
 	String BKA219;
@@ -83,9 +83,9 @@ public class Chemical {
 	String BKA222;
 	@Field
 	String BKA225;
-	@Field
+	@Field("国产进口")
 	String BKA226;
-	@Field
+	@Field("基本药物")
 	String BKA228;
 	@Field
 	String BKA231;
@@ -103,13 +103,13 @@ public class Chemical {
 	String BKA237;
 	@Field
 	String BKA240;
-	@Field
+	@Field("一级分类")
 	String BKA246;
-	@Field
+	@Field("二级分类")
 	String BKA247;
-	@Field
+	@Field("三级分类")
 	String BKA248;
-	@Field
+	@Field("四级分类")
 	String BKA249;
 
 	public String getBAZ001() {
