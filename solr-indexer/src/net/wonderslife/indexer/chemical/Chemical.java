@@ -117,7 +117,11 @@ public class Chemical {
 	}
 
 	public void setBAZ001(String bAZ001) {
-		BAZ001 = bAZ001;
+		if ("".equals(bAZ001) || bAZ001 == null) {
+			BAZ001 = "空";
+		} else {
+			BAZ001 = bAZ001;
+		}
 	}
 
 	public String getAKA060() {
@@ -125,7 +129,11 @@ public class Chemical {
 	}
 
 	public void setAKA060(String aKA060) {
-		AKA060 = aKA060;
+		if ("".equals(aKA060) || aKA060 == null) {
+			AKA060 = "空";
+		} else {
+			AKA060 = aKA060;
+		}
 	}
 
 	public String getAKA061() {
@@ -245,7 +253,11 @@ public class Chemical {
 	}
 
 	public void setBKC173(String bKC173) {
-		BKC173 = bKC173;
+		if ("".equals(bKC173) || bKC173 == null) {
+			BKC173 = "空";
+		} else {
+			BKC173 = bKC173;
+		}
 	}
 
 	public String getALA011() {
@@ -285,7 +297,11 @@ public class Chemical {
 	}
 
 	public void setAAE100(String aAE100) {
-		AAE100 = aAE100;
+		if ("".equals(aAE100) || aAE100 == null) {
+			AAE100 = "空";
+		} else {
+			AAE100 = aAE100;
+		}
 	}
 
 	public String getAAE013() {
@@ -301,7 +317,11 @@ public class Chemical {
 	}
 
 	public void setAAA027(String aAA027) {
-		AAA027 = aAA027;
+		if ("".equals(aAA027) || aAA027 == null) {
+			AAA027 = "空";
+		} else {
+			AAA027 = aAA027;
+		}
 	}
 
 	public String getAAB034() {
@@ -333,7 +353,11 @@ public class Chemical {
 	}
 
 	public void setBKA204(String bKA204) {
-		BKA204 = bKA204;
+		if ("".equals(bKA204) || bKA204 == null) {
+			BKA204 = "空";
+		} else {
+			BKA204 = bKA204;
+		}
 	}
 
 	public String getBKA610() {
@@ -517,7 +541,11 @@ public class Chemical {
 	}
 
 	public void setBKA246(String bKA246) {
-		BKA246 = bKA246;
+		if ("".equals(bKA246) || bKA246 == null) {
+			BKA246 = "空";
+		} else {
+			BKA246 = bKA246;
+		}
 	}
 
 	public String getBKA247() {
@@ -525,7 +553,11 @@ public class Chemical {
 	}
 
 	public void setBKA247(String bKA247) {
-		BKA247 = bKA247;
+		if ("".equals(bKA247) || bKA247 == null) {
+			BKA247 = "空";
+		} else {
+			BKA247 = bKA247;
+		}
 	}
 
 	public String getBKA248() {
@@ -533,7 +565,11 @@ public class Chemical {
 	}
 
 	public void setBKA248(String bKA248) {
-		BKA248 = bKA248;
+		if ("".equals(bKA248) || bKA248 == null) {
+			BKA248 = "空";
+		} else {
+			BKA248 = bKA248;
+		}
 	}
 
 	public String getBKA249() {
@@ -541,7 +577,11 @@ public class Chemical {
 	}
 
 	public void setBKA249(String bKA249) {
-		BKA249 = bKA249;
+		if ("".equals(bKA249) || bKA249 == null) {
+			BKA249 = "空";
+		} else {
+			BKA249 = bKA249;
+		}
 	}
 
 	@Field
