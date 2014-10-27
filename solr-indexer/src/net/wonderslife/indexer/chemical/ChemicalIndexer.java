@@ -29,8 +29,8 @@ public class ChemicalIndexer {
 			solr.commit();
 			// connect to database
 			conn = JDBCUtil.getConnection();
-			// 需要判断如果是null则设置中文空
-			String sql = "SELECT AAA027,AAB034,AAE011,AAE013,AAE030,AAE031,AAE036,fun_getdesc('AAE100',AAE100) AAE100,AKA020,fun_getdesc('AKA022',AKA022) AKA022,AKA060,AKA061, fun_getdesc('aka063',AKA063) AKA063, fun_getdesc('aka065',AKA065) AKA065,AKA070,AKA074,AKA109,AKB020,fun_getdesc('ALA011',ALA011) ALA011,fun_getdesc('AMA011',AMA011) AMA011,BAZ001,BKA083,fun_getdesc('BKA084',BKA084) BKA084,BKA087,fun_getdesc('BKA204',BKA204) BKA204,fun_getdesc('BKA209',BKA209) BKA209,fun_getdesc('BKA210',BKA210) BKA210,fun_getdesc('BKA217',BKA217) BKA217,BKA219,BKA221,BKA222,BKA225,fun_getdesc('BKA226',BKA226) BKA226,fun_getdesc('BKA228',BKA228) BKA228,BKA231,BKA232,BKA233,BKA234,BKA235,BKA236,BKA237,BKA240,BKA246,BKA247,BKA248,BKA249,BKA605,fun_getdesc('BKA608',BKA608) BKA608,BKA610,BKA620,BKA613,BKA638,fun_getdesc('BKC173',BKC173) BKC173 FROM KA02 ";
+			// 需要判断如果是null则设置中文无
+			String sql = "SELECT AAA027,AAB034,AAE011,AAE013,AAE030,AAE031,AAE036,fun_getdesc('AAE100',AAE100) AAE100,AKA020,fun_getdesc('AKA022',AKA022) AKA022,AKA060,AKA061,AKA062, fun_getdesc('AKA063',AKA063) AKA063, fun_getdesc('AKA065',AKA065) AKA065,AKA070,AKA074,AKA109,AKB020,fun_getdesc('ALA011',ALA011) ALA011,fun_getdesc('AMA011',AMA011) AMA011,BAZ001,BKA083,fun_getdesc('BKA084',BKA084) BKA084,BKA087,fun_getdesc('BKA204',BKA204) BKA204,fun_getdesc('BKA209',BKA209) BKA209,fun_getdesc('BKA210',BKA210) BKA210,fun_getdesc('BKA217',BKA217) BKA217,fun_getdesc('BKA219',BKA219) BKA219,fun_getdesc('BKA221',BKA221) BKA221,BKA222,BKA225,fun_getdesc('BKA226',BKA226) BKA226,fun_getdesc('BKA228',BKA228) BKA228,BKA231,BKA232,BKA233,BKA234,BKA235,BKA236,BKA237,BKA240,BKA246,BKA247,BKA248,BKA249,BKA605,fun_getdesc('BKA608',BKA608) BKA608,BKA610,BKA620,BKA613,fun_getdesc('BKA638',BKA638) BKA638,fun_getdesc('BKC173',BKC173) BKC173 FROM KA02 ";
 			List<Map<String, Object>> result = JDBCUtil.executeQuery(sql, conn,
 					null);
 			long mid = System.currentTimeMillis();
@@ -39,8 +39,8 @@ public class ChemicalIndexer {
 			while (it.hasNext()) {
 				Map<java.lang.String, java.lang.Object> row = (Map<java.lang.String, java.lang.Object>) it
 						.next();
-//				System.out.println("Indexer is parsing BAZ001:"
-//						+ row.get("BAZ001") + "... ...");
+				// System.out.println("Indexer is parsing BAZ001:"
+				// + row.get("BAZ001") + "... ...");
 				Chemical ch = new Chemical();
 				ch.setAAA027(String.valueOf(row.get("AAA027")));
 				ch.setAAB034(String.valueOf(row.get("AAB034")));
@@ -57,6 +57,7 @@ public class ChemicalIndexer {
 				ch.setAKA022(String.valueOf(row.get("AKA022")));
 				ch.setAKA060(String.valueOf(row.get("AKA060")));
 				ch.setAKA061(String.valueOf(row.get("AKA061")));
+				ch.setAKA062(String.valueOf(row.get("AKA062")));
 				ch.setAKA063(String.valueOf(row.get("AKA063")));
 				ch.setAKA065(String.valueOf(row.get("AKA065")));
 				ch.setAKA070(String.valueOf(row.get("AKA070")));

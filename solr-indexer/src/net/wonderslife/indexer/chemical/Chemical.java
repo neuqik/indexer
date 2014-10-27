@@ -19,9 +19,9 @@ public class Chemical {
 	String AKA063;
 	@Field("收费等级")
 	String AKA065;
-	@Field
+	@Field("剂型")
 	String AKA070;
-	@Field
+	@Field("规格")
 	String AKA074;
 	@Field("院内制剂")
 	String BKA084;
@@ -47,13 +47,13 @@ public class Chemical {
 	String AAE031;
 	@Field("有效")
 	String AAE100;
-	@Field
+	@Field("备注")
 	String AAE013;
 	@Field
 	String AAA027;
 	@Field
 	String AAB034;
-	@Field
+	@Field("经办人")
 	String AAE011;
 	@Field
 	String AAE036;
@@ -81,7 +81,7 @@ public class Chemical {
 	String BKA221;
 	@Field
 	String BKA222;
-	@Field
+	@Field("医保药品剂型")
 	String BKA225;
 	@Field("国产进口")
 	String BKA226;
@@ -89,7 +89,7 @@ public class Chemical {
 	String BKA228;
 	@Field
 	String BKA231;
-	@Field
+	@Field("医保目录编号")
 	String BKA232;
 	@Field
 	String BKA233;
@@ -101,7 +101,7 @@ public class Chemical {
 	String BKA236;
 	@Field
 	String BKA237;
-	@Field
+	@Field("批准文号")
 	String BKA240;
 	@Field("一级分类")
 	String BKA246;
@@ -118,7 +118,7 @@ public class Chemical {
 
 	public void setBAZ001(String bAZ001) {
 		if ("".equals(bAZ001) || bAZ001 == null) {
-			BAZ001 = "空";
+			BAZ001 = "无";
 		} else {
 			BAZ001 = bAZ001;
 		}
@@ -130,7 +130,7 @@ public class Chemical {
 
 	public void setAKA060(String aKA060) {
 		if ("".equals(aKA060) || aKA060 == null) {
-			AKA060 = "空";
+			AKA060 = "无";
 		} else {
 			AKA060 = aKA060;
 		}
@@ -141,7 +141,11 @@ public class Chemical {
 	}
 
 	public void setAKA061(String aKA061) {
-		AKA061 = aKA061;
+		if ("".equals(aKA061) || aKA061 == null) {
+			AKA061 = "无";
+		} else {
+			AKA061 = aKA061;
+		}
 	}
 
 	public String getAKA062() {
@@ -149,7 +153,11 @@ public class Chemical {
 	}
 
 	public void setAKA062(String aKA062) {
-		AKA062 = aKA062;
+		if ("".equals(aKA062) || aKA062 == null) {
+			AKA062 = "无";
+		} else {
+			AKA062 = aKA062.trim();
+		}
 	}
 
 	public String getAKA020() {
@@ -157,7 +165,11 @@ public class Chemical {
 	}
 
 	public void setAKA020(String aKA020) {
-		AKA020 = aKA020;
+		if ("".equals(aKA020) || aKA020 == null) {
+			AKA020 = "无";
+		} else {
+			AKA020 = aKA020;
+		}
 	}
 
 	public String getBKA605() {
@@ -165,7 +177,11 @@ public class Chemical {
 	}
 
 	public void setBKA605(String bKA605) {
-		BKA605 = bKA605;
+		if ("".equals(bKA605) || bKA605 == null) {
+			BKA605 = "无";
+		} else {
+			BKA605 = bKA605;
+		}
 	}
 
 	public String getAKA063() {
@@ -173,7 +189,11 @@ public class Chemical {
 	}
 
 	public void setAKA063(String aKA063) {
-		AKA063 = aKA063;
+		if ("".equals(aKA063) || aKA063 == null) {
+			AKA063 = "无";
+		} else {
+			AKA063 = aKA063;
+		}
 	}
 
 	public String getAKA065() {
@@ -181,7 +201,11 @@ public class Chemical {
 	}
 
 	public void setAKA065(String aKA065) {
-		AKA065 = aKA065;
+		if ("".equals(aKA065) || aKA065 == null) {
+			AKA065 = "无";
+		} else {
+			AKA065 = aKA065;
+		}
 	}
 
 	public String getAKA070() {
@@ -189,7 +213,11 @@ public class Chemical {
 	}
 
 	public void setAKA070(String aKA070) {
-		AKA070 = aKA070;
+		if ("".equals(aKA070) || aKA070 == null) {
+			AKA070 = "无";
+		} else {
+			AKA070 = aKA070;
+		}
 	}
 
 	public String getAKA074() {
@@ -197,7 +225,11 @@ public class Chemical {
 	}
 
 	public void setAKA074(String aKA074) {
-		AKA074 = aKA074;
+		if ("".equals(aKA074) || aKA074 == null) {
+			AKA074 = "无";
+		} else {
+			AKA074 = aKA074;
+		}
 	}
 
 	public String getBKA084() {
@@ -205,7 +237,11 @@ public class Chemical {
 	}
 
 	public void setBKA084(String bKA084) {
-		BKA084 = bKA084;
+		if ("".equals(bKA084) || bKA084 == null) {
+			BKA084 = "无";
+		} else {
+			BKA084 = bKA084;
+		}
 	}
 
 	public String getAKB020() {
@@ -213,7 +249,11 @@ public class Chemical {
 	}
 
 	public void setAKB020(String aKB020) {
-		AKB020 = aKB020;
+		if ("".equals(aKB020) || aKB020 == null) {
+			AKB020 = "无";
+		} else {
+			AKB020 = aKB020;
+		}
 	}
 
 	public String getBKA608() {
@@ -221,7 +261,11 @@ public class Chemical {
 	}
 
 	public void setBKA608(String bKA608) {
-		BKA608 = bKA608;
+		if ("".equals(bKA608) || bKA608 == null) {
+			BKA608 = "无";
+		} else {
+			BKA608 = bKA608;
+		}
 	}
 
 	public String getAKA109() {
@@ -229,7 +273,11 @@ public class Chemical {
 	}
 
 	public void setAKA109(String aKA109) {
-		AKA109 = aKA109;
+		if ("".equals(aKA109) || aKA109 == null) {
+			AKA109 = "无";
+		} else {
+			AKA109 = aKA109;
+		}
 	}
 
 	public String getBKA620() {
@@ -237,7 +285,11 @@ public class Chemical {
 	}
 
 	public void setBKA620(String bKA620) {
-		BKA620 = bKA620;
+		if ("".equals(bKA620) || bKA620 == null) {
+			BKA620 = "无";
+		} else {
+			BKA620 = bKA620;
+		}
 	}
 
 	public String getBKA613() {
@@ -245,7 +297,11 @@ public class Chemical {
 	}
 
 	public void setBKA613(String bKA613) {
-		BKA613 = bKA613;
+		if ("".equals(bKA613) || bKA613 == null) {
+			BKA613 = "无";
+		} else {
+			BKA613 = bKA613;
+		}
 	}
 
 	public String getBKC173() {
@@ -254,7 +310,7 @@ public class Chemical {
 
 	public void setBKC173(String bKC173) {
 		if ("".equals(bKC173) || bKC173 == null) {
-			BKC173 = "空";
+			BKC173 = "无";
 		} else {
 			BKC173 = bKC173;
 		}
@@ -265,7 +321,11 @@ public class Chemical {
 	}
 
 	public void setALA011(String aLA011) {
-		ALA011 = aLA011;
+		if ("".equals(aLA011) || aLA011 == null) {
+			ALA011 = "无";
+		} else {
+			ALA011 = aLA011;
+		}
 	}
 
 	public String getAMA011() {
@@ -273,7 +333,11 @@ public class Chemical {
 	}
 
 	public void setAMA011(String aMA011) {
-		AMA011 = aMA011;
+		if ("".equals(aMA011) || aMA011 == null) {
+			AMA011 = "无";
+		} else {
+			AMA011 = aMA011;
+		}
 	}
 
 	public String getAAE030() {
@@ -281,7 +345,11 @@ public class Chemical {
 	}
 
 	public void setAAE030(String aAE030) {
-		AAE030 = aAE030;
+		if ("".equals(aAE030) || aAE030 == null) {
+			AAE030 = "无";
+		} else {
+			AAE030 = aAE030;
+		}
 	}
 
 	public String getAAE031() {
@@ -298,7 +366,7 @@ public class Chemical {
 
 	public void setAAE100(String aAE100) {
 		if ("".equals(aAE100) || aAE100 == null) {
-			AAE100 = "空";
+			AAE100 = "无";
 		} else {
 			AAE100 = aAE100;
 		}
@@ -309,7 +377,11 @@ public class Chemical {
 	}
 
 	public void setAAE013(String aAE013) {
-		AAE013 = aAE013;
+		if ("".equals(aAE013) || aAE013 == null) {
+			AAE013 = "无";
+		} else {
+			AAE013 = aAE013.trim();
+		}
 	}
 
 	public String getAAA027() {
@@ -318,7 +390,7 @@ public class Chemical {
 
 	public void setAAA027(String aAA027) {
 		if ("".equals(aAA027) || aAA027 == null) {
-			AAA027 = "空";
+			AAA027 = "无";
 		} else {
 			AAA027 = aAA027;
 		}
@@ -329,7 +401,11 @@ public class Chemical {
 	}
 
 	public void setAAB034(String aAB034) {
-		AAB034 = aAB034;
+		if ("".equals(aAB034) || aAB034 == null) {
+			AAB034 = "无";
+		} else {
+			AAB034 = aAB034;
+		}
 	}
 
 	public String getAAE011() {
@@ -337,7 +413,11 @@ public class Chemical {
 	}
 
 	public void setAAE011(String aAE011) {
-		AAE011 = aAE011;
+		if ("".equals(aAE011) || aAE011 == null) {
+			AAE011 = "无";
+		} else {
+			AAE011 = aAE011;
+		}
 	}
 
 	public String getAAE036() {
@@ -354,7 +434,7 @@ public class Chemical {
 
 	public void setBKA204(String bKA204) {
 		if ("".equals(bKA204) || bKA204 == null) {
-			BKA204 = "空";
+			BKA204 = "无";
 		} else {
 			BKA204 = bKA204;
 		}
@@ -365,7 +445,11 @@ public class Chemical {
 	}
 
 	public void setBKA610(String bKA610) {
-		BKA610 = bKA610;
+		if ("".equals(bKA610) || bKA610 == null) {
+			BKA610 = "无";
+		} else {
+			BKA610 = bKA610;
+		}
 	}
 
 	public String getBKA083() {
@@ -373,7 +457,11 @@ public class Chemical {
 	}
 
 	public void setBKA083(String bKA083) {
-		BKA083 = bKA083;
+		if ("".equals(bKA083) || bKA083 == null) {
+			BKA083 = "无";
+		} else {
+			BKA083 = bKA083;
+		}
 	}
 
 	public String getBKA087() {
@@ -381,7 +469,11 @@ public class Chemical {
 	}
 
 	public void setBKA087(String bKA087) {
-		BKA087 = bKA087;
+		if ("".equals(bKA087) || bKA087 == null) {
+			BKA087 = "无";
+		} else {
+			BKA087 = bKA087;
+		}
 	}
 
 	public String getAKA022() {
@@ -389,7 +481,11 @@ public class Chemical {
 	}
 
 	public void setAKA022(String aKA022) {
-		AKA022 = aKA022;
+		if ("".equals(aKA022) || aKA022 == null) {
+			AKA022 = "无";
+		} else {
+			AKA022 = aKA022;
+		}
 	}
 
 	public String getBKA638() {
@@ -397,7 +493,11 @@ public class Chemical {
 	}
 
 	public void setBKA638(String bKA638) {
-		BKA638 = bKA638;
+		if ("".equals(bKA638) || bKA638 == null) {
+			BKA638 = "无";
+		} else {
+			BKA638 = bKA638;
+		}
 	}
 
 	public String getBKA209() {
@@ -405,7 +505,11 @@ public class Chemical {
 	}
 
 	public void setBKA209(String bKA209) {
-		BKA209 = bKA209;
+		if ("".equals(bKA209) || bKA209 == null) {
+			BKA209 = "无";
+		} else {
+			BKA209 = bKA209;
+		}
 	}
 
 	public String getBKA210() {
@@ -413,7 +517,11 @@ public class Chemical {
 	}
 
 	public void setBKA210(String bKA210) {
-		BKA210 = bKA210;
+		if ("".equals(bKA210) || bKA210 == null) {
+			BKA210 = "无";
+		} else {
+			BKA210 = bKA210;
+		}
 	}
 
 	public String getBKA217() {
@@ -421,7 +529,11 @@ public class Chemical {
 	}
 
 	public void setBKA217(String bKA217) {
-		BKA217 = bKA217;
+		if ("".equals(bKA217) || bKA217 == null) {
+			BKA217 = "无";
+		} else {
+			BKA217 = bKA217;
+		}
 	}
 
 	public String getBKA219() {
@@ -429,7 +541,11 @@ public class Chemical {
 	}
 
 	public void setBKA219(String bKA219) {
-		BKA219 = bKA219;
+		if ("".equals(bKA219) || bKA219 == null) {
+			BKA219 = "无";
+		} else {
+			BKA219 = bKA219;
+		}
 	}
 
 	public String getBKA221() {
@@ -437,7 +553,11 @@ public class Chemical {
 	}
 
 	public void setBKA221(String bKA221) {
-		BKA221 = bKA221;
+		if ("".equals(bKA221) || bKA221 == null) {
+			BKA221 = "无";
+		} else {
+			BKA221 = bKA221;
+		}
 	}
 
 	public String getBKA222() {
@@ -445,7 +565,11 @@ public class Chemical {
 	}
 
 	public void setBKA222(String bKA222) {
-		BKA222 = bKA222;
+		if ("".equals(bKA222) || bKA222 == null) {
+			BKA222 = "无";
+		} else {
+			BKA222 = bKA222;
+		}
 	}
 
 	public String getBKA225() {
@@ -453,7 +577,11 @@ public class Chemical {
 	}
 
 	public void setBKA225(String bKA225) {
-		BKA225 = bKA225;
+		if ("".equals(bKA225) || bKA225 == null) {
+			BKA225 = "无";
+		} else {
+			BKA225 = bKA225;
+		}
 	}
 
 	public String getBKA226() {
@@ -461,7 +589,11 @@ public class Chemical {
 	}
 
 	public void setBKA226(String bKA226) {
-		BKA226 = bKA226;
+		if ("".equals(bKA226) || bKA226 == null) {
+			BKA226 = "无";
+		} else {
+			BKA226 = bKA226;
+		}
 	}
 
 	public String getBKA228() {
@@ -469,7 +601,11 @@ public class Chemical {
 	}
 
 	public void setBKA228(String bKA228) {
-		BKA228 = bKA228;
+		if ("".equals(bKA228) || bKA228 == null) {
+			BKA228 = "无";
+		} else {
+			BKA228 = bKA228;
+		}
 	}
 
 	public String getBKA231() {
@@ -477,7 +613,11 @@ public class Chemical {
 	}
 
 	public void setBKA231(String bKA231) {
-		BKA231 = bKA231;
+		if ("".equals(bKA231) || bKA231 == null) {
+			BKA231 = "无";
+		} else {
+			BKA231 = bKA231;
+		}
 	}
 
 	public String getBKA232() {
@@ -485,7 +625,11 @@ public class Chemical {
 	}
 
 	public void setBKA232(String bKA232) {
-		BKA232 = bKA232;
+		if ("".equals(bKA232) || bKA232 == null) {
+			BKA232 = "无";
+		} else {
+			BKA232 = bKA232;
+		}
 	}
 
 	public String getBKA233() {
@@ -493,7 +637,11 @@ public class Chemical {
 	}
 
 	public void setBKA233(String bKA233) {
-		BKA233 = bKA233;
+		if ("".equals(bKA233) || bKA233 == null) {
+			BKA233 = "无";
+		} else {
+			BKA233 = bKA233;
+		}
 	}
 
 	public String getBKA234() {
@@ -501,7 +649,11 @@ public class Chemical {
 	}
 
 	public void setBKA234(String bKA234) {
-		BKA234 = bKA234;
+		if ("".equals(bKA234) || bKA234 == null) {
+			BKA234 = "无";
+		} else {
+			BKA234 = bKA234;
+		}
 	}
 
 	public String getBKA235() {
@@ -509,7 +661,11 @@ public class Chemical {
 	}
 
 	public void setBKA235(String bKA235) {
-		BKA235 = bKA235;
+		if ("".equals(bKA235) || bKA235 == null) {
+			BKA235 = "无";
+		} else {
+			BKA235 = bKA235;
+		}
 	}
 
 	public String getBKA236() {
@@ -517,7 +673,11 @@ public class Chemical {
 	}
 
 	public void setBKA236(String bKA236) {
-		BKA236 = bKA236;
+		if ("".equals(bKA236) || bKA236 == null) {
+			BKA236 = "无";
+		} else {
+			BKA236 = bKA236;
+		}
 	}
 
 	public String getBKA237() {
@@ -525,7 +685,11 @@ public class Chemical {
 	}
 
 	public void setBKA237(String bKA237) {
-		BKA237 = bKA237;
+		if ("".equals(bKA237) || bKA237 == null) {
+			BKA237 = "无";
+		} else {
+			BKA237 = bKA237;
+		}
 	}
 
 	public String getBKA240() {
@@ -533,7 +697,11 @@ public class Chemical {
 	}
 
 	public void setBKA240(String bKA240) {
-		BKA240 = bKA240;
+		if ("".equals(bKA240) || bKA240 == null) {
+			BKA240 = "无";
+		} else {
+			BKA240 = bKA240;
+		}
 	}
 
 	public String getBKA246() {
@@ -542,7 +710,7 @@ public class Chemical {
 
 	public void setBKA246(String bKA246) {
 		if ("".equals(bKA246) || bKA246 == null) {
-			BKA246 = "空";
+			BKA246 = "无";
 		} else {
 			BKA246 = bKA246;
 		}
@@ -554,7 +722,7 @@ public class Chemical {
 
 	public void setBKA247(String bKA247) {
 		if ("".equals(bKA247) || bKA247 == null) {
-			BKA247 = "空";
+			BKA247 = "无";
 		} else {
 			BKA247 = bKA247;
 		}
@@ -566,7 +734,7 @@ public class Chemical {
 
 	public void setBKA248(String bKA248) {
 		if ("".equals(bKA248) || bKA248 == null) {
-			BKA248 = "空";
+			BKA248 = "无";
 		} else {
 			BKA248 = bKA248;
 		}
@@ -578,7 +746,7 @@ public class Chemical {
 
 	public void setBKA249(String bKA249) {
 		if ("".equals(bKA249) || bKA249 == null) {
-			BKA249 = "空";
+			BKA249 = "无";
 		} else {
 			BKA249 = bKA249;
 		}
