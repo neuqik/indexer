@@ -312,7 +312,7 @@ public class Recipe {
 
 	public void setAKA068(String aKA068) {
 		if ("".equals(aKA068) || aKA068 == null) {
-			AKA068 = "无";
+			AKA068 = "-1";
 		} else {
 			AKA068 = aKA068.trim();
 		}
@@ -327,7 +327,7 @@ public class Recipe {
 
 	public void setAKC268(String aKC268) {
 		if ("".equals(aKC268) || aKC268 == null) {
-			AKC268 = "无";
+			AKC268 = "-1";
 		} else {
 			AKC268 = aKC268.trim();
 		}
@@ -342,7 +342,7 @@ public class Recipe {
 
 	public void setAKA069(String aKA069) {
 		if ("".equals(aKA069) || aKA069 == null) {
-			AKA069 = "无";
+			AKA069 = "-1";
 		} else {
 			AKA069 = aKA069.trim();
 		}
@@ -462,7 +462,7 @@ public class Recipe {
 
 	public void setBKA636(String bKA636) {
 		if ("".equals(bKA636) || bKA636 == null) {
-			BKA636 = "无";
+			BKA636 = "-1";
 		} else {
 			BKA636 = bKA636.trim();
 		}
@@ -477,7 +477,7 @@ public class Recipe {
 
 	public void setBKA637(String bKA637) {
 		if ("".equals(bKA637) || bKA637 == null) {
-			BKA637 = "无";
+			BKA637 = "-1";
 		} else {
 			BKA637 = bKA637.trim();
 		}
@@ -492,7 +492,7 @@ public class Recipe {
 
 	public void setBKA104(String bKA104) {
 		if ("".equals(bKA104) || bKA104 == null) {
-			BKA104 = "无";
+			BKA104 = "0";
 		} else {
 			BKA104 = bKA104.trim();
 		}
@@ -567,7 +567,7 @@ public class Recipe {
 
 	public void setAAE036(String aAE036) {
 		if ("".equals(aAE036) || aAE036 == null) {
-			AAE036 = "无";
+			AAE036 = "";
 		} else {
 			AAE036 = aAE036.trim();
 		}
