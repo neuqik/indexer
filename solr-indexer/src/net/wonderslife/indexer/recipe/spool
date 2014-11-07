@@ -1,0 +1,200 @@
+set trimspool on
+set linesize 32767
+set pagesize 0
+set newpage 1
+set heading off
+set term off
+set feedback off
+set heading off
+set term off
+spool /home/oracle/page6.txt
+SELECT           AKB020||','||
+                 AKC190||','||
+                 AAE072||','||
+                 AKC220||','||
+                 AKE005||','||
+                 BKA135||','||
+                 BKC301||','||
+                 AKE002||','||
+                 AKE006||','||
+                 AKC221||','||
+                 AKE010||','||
+                 AKA065||','||
+                 AKE003||','||
+                 AKA063||','||
+                 AKC225||','||
+                 AKC226||','||
+                 AAE019||','||
+                 AKC228||','||
+                 AKE051||','||
+                 AKA068||','||
+                 AKC268||','||
+                 BKC228||','||
+                 BKA635||','||
+                 AKA069||','||
+                 BKA107||','||
+                 BKA108||','||
+                 BKC127||','||
+                 AKA064||','||
+                 AAE100||','||
+                 BKC126||','||
+                 BKC125||','||
+                 BKA231||','||
+                 BAE073||','||
+                 BKA636||','||
+                 BKA637||','||
+                 BKA104||','||
+                 AKA070||','||
+                 AKA067||','||
+                 AKA074||','||
+                 BKC378||','||
+                 BKC379||','||
+                 BKC380||','||
+                 BKC381||','||
+                 AAE011||','||
+                 AAE036||','||
+                 BKC319||','||
+                 BKF050||','||
+                 AKC273||','||
+                 AKA071||','||
+                 AKA072||','||
+                 AKA107||','||
+                 BKA076||','||
+                 AKF002||','||
+                 BKC241||','||
+                 BKC242||','||
+                 BKC243||','||
+                 BKA205||','||
+                 BKB401||','||
+                 BKA650||','||
+                 BKA651||','||
+                 AKA130||','||
+                 AKA120||','||
+                 BAE075||','||
+                 AAE017||','||
+                 AAE032||','||
+                 BKC060||','||
+                 BKC061||','||
+                 BKC062||','||
+                 BKC063||','||
+                 BKC064||','||
+                 BKC065||','||
+                 BKC066||','||
+                 BKC067||','||
+                 BKC068||','||
+                 BKC069||','||
+                 BAZ001||','||
+                 BZE011||','||
+                 BZE036||','||
+                 AAA027||','||
+                 AAB034||','||
+                 AAC001||','||
+                 BKB070||','||
+                 BKB071||','||
+                 BKC077||','||
+                 BKC078||','||
+                 BKC079||','||
+                 BKC081||','||
+                 BKA610||','||
+                 BKA971||','||
+                 BKA972||','||
+                 BKA973||','||
+                 BKA974
+  FROM (SELECT A.*, ROWNUM RN
+          FROM (SELECT 
+                 AKB020,
+                 AKC190,
+                 AAE072,
+                 AKC220,
+                 AKE005,
+                 fun_getdesc('BKA135', BKA135) BKA135,
+                 BKC301,
+                 AKE002,
+                 AKE006,
+                 TO_CHAR(AKC221, 'YYYY-MM-DD') AKC221,
+                 TO_CHAR(AKE010, 'YYYY-MM-DD') AKE010,
+                 fun_getdesc('AKA065', AKA065) AKA065,
+                 fun_getdesc('AKE003', AKE003) AKE003,
+                 fun_getdesc('AKA063', AKA063) AKA063,
+                 AKC225,
+                 AKC226,
+                 AAE019,
+                 AKC228,
+                 AKE051,
+                 AKA068,
+                 AKC268,
+                 BKC228,
+                 BKA635,
+                 AKA069,
+                 BKA107,
+                 BKA108,
+                 fun_getdesc('BKC127', BKC127) BKC127,
+                 fun_getdesc('AKA064', AKA064) AKA064,
+                 fun_getdesc('AAE100', AAE100) AAE100,
+                 fun_getdesc('BKC126', BKC126) BKC126,
+                 fun_getdesc('BKC125', BKC125) BKC125,
+                 fun_getdesc('BKA231', BKA231) BKA231,
+                 fun_getdesc('BAE073', BAE073) BAE073,
+                 BKA636,
+                 BKA637,
+                 BKA104,
+                 AKA070,
+                 AKA067,
+                 AKA074,
+                 BKC378,
+                 BKC379,
+                 BKC380,
+                 BKC381,
+                 AAE011,
+                 TO_CHAR(AAE036, 'YYYY-MM-DD') AAE036,
+                 BKC319,
+                 BKF050,
+                 AKC273,
+                 AKA071,
+                 AKA072,
+                 AKA107,
+                 BKA076,
+                 AKF002,
+                 BKC241,
+                 BKC242,
+                 fun_getdesc('BKC243', BKC243) BKC243,
+                 fun_getdesc('BKA205', BKA205) BKA205,
+                 BKB401,
+                 BKA650,
+                 BKA651,
+                 fun_getdesc('AKA130', AKA130) AKA130,
+                 AKA120,
+                 BAE075,
+                 AAE017,
+                 TO_CHAR(AAE032, 'YYYY-MM-DD') AAE032,
+                 BKC060,
+                 BKC061,
+                 BKC062,
+                 BKC063,
+                 BKC064,
+                 BKC065,
+                 BKC066,
+                 fun_getdesc('BKC067', BKC067) BKC067,
+                 fun_getdesc('BKC068', BKC068) BKC068,
+                 fun_getdesc('BKC069', BKC069) BKC069,
+                 BAZ001,
+                 BZE011,
+                 TO_CHAR(BZE036, 'YYYY-MM-DD') BZE036,
+                 AAA027,
+                 AAB034,
+                 AAC001,
+                 BKB070,
+                 BKB071,
+                 BKC077,
+                 BKC078,
+                 BKC079,
+                 BKC081,
+                 BKA610,
+                 BKA971,
+                 BKA972,
+                 BKA973,
+                 BKA974
+                  FROM kc22) A
+         WHERE ROWNUM <= 1070000)
+ WHERE RN >= 1060000;
+spool off

@@ -252,7 +252,7 @@ public class Recipe {
 
 	public void setAKC226(String aKC226) {
 		if ("".equals(aKC226) || aKC226 == null) {
-			AKC226 = "无";
+			AKC226 = "0";
 		} else {
 			AKC226 = aKC226.trim();
 		}
@@ -267,7 +267,7 @@ public class Recipe {
 
 	public void setAAE019(String aAE019) {
 		if ("".equals(aAE019) || aAE019 == null) {
-			AAE019 = "无";
+			AAE019 = "0";
 		} else {
 			AAE019 = aAE019.trim();
 		}
@@ -282,7 +282,7 @@ public class Recipe {
 
 	public void setAKC228(String aKC228) {
 		if ("".equals(aKC228) || aKC228 == null) {
-			AKC228 = "无";
+			AKC228 = "0";
 		} else {
 			AKC228 = aKC228.trim();
 		}
@@ -297,7 +297,7 @@ public class Recipe {
 
 	public void setAKE051(String aKE051) {
 		if ("".equals(aKE051) || aKE051 == null) {
-			AKE051 = "无";
+			AKE051 = "0";
 		} else {
 			AKE051 = aKE051.trim();
 		}
@@ -312,7 +312,7 @@ public class Recipe {
 
 	public void setAKA068(String aKA068) {
 		if ("".equals(aKA068) || aKA068 == null) {
-			AKA068 = "-1";
+			AKA068 = "0";
 		} else {
 			AKA068 = aKA068.trim();
 		}
@@ -327,7 +327,7 @@ public class Recipe {
 
 	public void setAKC268(String aKC268) {
 		if ("".equals(aKC268) || aKC268 == null) {
-			AKC268 = "-1";
+			AKC268 = "0";
 		} else {
 			AKC268 = aKC268.trim();
 		}
@@ -342,7 +342,7 @@ public class Recipe {
 
 	public void setAKA069(String aKA069) {
 		if ("".equals(aKA069) || aKA069 == null) {
-			AKA069 = "-1";
+			AKA069 = "0";
 		} else {
 			AKA069 = aKA069.trim();
 		}
@@ -462,7 +462,7 @@ public class Recipe {
 
 	public void setBKA636(String bKA636) {
 		if ("".equals(bKA636) || bKA636 == null) {
-			BKA636 = "-1";
+			BKA636 = "0";
 		} else {
 			BKA636 = bKA636.trim();
 		}
@@ -477,7 +477,7 @@ public class Recipe {
 
 	public void setBKA637(String bKA637) {
 		if ("".equals(bKA637) || bKA637 == null) {
-			BKA637 = "-1";
+			BKA637 = "0";
 		} else {
 			BKA637 = bKA637.trim();
 		}
@@ -837,7 +837,7 @@ public class Recipe {
 
 	public void setBKC062(String bKC062) {
 		if ("".equals(bKC062) || bKC062 == null) {
-			BKC062 = "无";
+			BKC062 = "0";
 		} else {
 			BKC062 = bKC062.trim();
 		}
@@ -852,7 +852,7 @@ public class Recipe {
 
 	public void setBKC063(String bKC063) {
 		if ("".equals(bKC063) || bKC063 == null) {
-			BKC063 = "无";
+			BKC063 = "0";
 		} else {
 			BKC063 = bKC063.trim();
 		}
@@ -957,7 +957,7 @@ public class Recipe {
 
 	public void setBZE036(String bZE036) {
 		if ("".equals(bZE036) || bZE036 == null) {
-			BZE036 = "无";
+			BZE036 = "";
 		} else {
 			BZE036 = bZE036.trim();
 		}
@@ -1062,7 +1062,7 @@ public class Recipe {
 
 	public void setBKC081(String bKC081) {
 		if ("".equals(bKC081) || bKC081 == null) {
-			BKC081 = "无";
+			BKC081 = "0";
 		} else {
 			BKC081 = bKC081.trim();
 		}
@@ -1132,6 +1132,63 @@ public class Recipe {
 
 	public void setContent_level(String content_level) {
 		this.content_level = content_level;
+	}
+
+	@Field("医疗机构名称")
+	String AKB021;
+	@Field("医疗机构类型")
+	String AKB022;
+	@Field("医疗机构等级")
+	String AKA101;
+	@Field("医疗机构服务类型")
+	String BKB010;
+
+	public String getAKB021() {
+		return AKB021;
+	}
+
+	public void setAKB021(String aKB021) {
+		if ("".equals(aKB021) || aKB021 == null) {
+			AKB021 = "无";
+		} else {
+			AKB021 = aKB021.trim();
+		}
+	}
+
+	public String getAKB022() {
+		return AKB022;
+	}
+
+	public void setAKB022(String aKB022) {
+		if ("".equals(aKB022) || aKB022 == null) {
+			AKB022 = "无";
+		} else {
+			AKB022 = aKB022.trim();
+		}
+	}
+
+	public String getAKA101() {
+		return AKA101;
+	}
+
+	public void setAKA101(String aKA101) {
+		if ("".equals(aKA101) || aKA101 == null) {
+			AKA101 = "无";
+		} else {
+			AKA101 = aKA101.trim();
+		}
+	}
+
+	public String getBKB010() {
+		return BKB010;
+	}
+
+	public void setBKB010(String bKB010) {
+		if ("".equals(bKB010) || bKB010 == null) {
+			BKB010 = "无";
+		} else {
+			BKB010 = bKB010.trim();
+		}
 	}
 
 }

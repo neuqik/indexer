@@ -58,6 +58,7 @@ public class JDBCUtil {
 
 	/**
 	 * 查询结果，不使用prepare的方法，如果是null则置为空
+	 * 执行过后conn会自动关闭
 	 * 
 	 */
 	public static List<Map<String, Object>> executeQuery(String sql,
