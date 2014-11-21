@@ -14,14 +14,10 @@ import net.wonderslife.util.FileUtil;
 import net.wonderslife.util.PropertyUtil;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.logging.Log;
-import org.apache.log4j.Logger;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.impl.HttpSolrServer;
 
 public class RecipeFileIndexer {
-	static Logger logger = Logger.getLogger(RecipeFileIndexer.class);
-
 	public static void main(String[] args) {
 		try {
 			long allstart = System.currentTimeMillis();
@@ -34,8 +30,8 @@ public class RecipeFileIndexer {
 			HospitalOrgList hosList = new HospitalOrgList();
 			hosList.init(codeList);
 			// 3.读取控制文件
-			List<String> ctl = FileUtils.readLines(new File(PropertyUtil
-					.get("solr.receipt.ctl")));
+			List<String> ctl = FileUtils.readLines(new File(
+					PropertyUtil.get("solr.receipt.ctl")));
 			// 从第10行开始，到最后一行-1，是字段顺序和列表
 			for (int i = 9; i < ctl.size() - 1; i++) {
 				String row = ctl.get(i).substring(ctl.get(i).indexOf("\"") + 1);
@@ -60,9 +56,8 @@ public class RecipeFileIndexer {
 				String file = (String) itor.next();
 				List<Recipe> docs = new ArrayList<Recipe>();
 				flag++;
-				logger.info(">>>>>>>>>>>start parsing:" + file + ">>>>>>>>>"
-						+ flag + "/" + allfile.size());
-
+				System.out.println(">>>>>>>>>>>start parsing:" + file
+						+ ">>>>>>>>>" + flag + "/" + allfile.size());
 				long start = System.currentTimeMillis();
 				List<String> content = FileUtils.readLines(new File(file));
 				for (int i = 0; i < content.size(); i++) {
@@ -72,19 +67,19 @@ public class RecipeFileIndexer {
 					// 如果第一位不是4位数字则跳过
 					if (!FileUtil.isNumeric(rows[0]) || rows[0].length() != 4
 							|| ".".equals(rows[0])) {
-						logger.info("Line:" + (i + 1)
+						System.out.println("Line:" + (i + 1)
 								+ " format error! First str is not number:"
 								+ rows[0]);
 						continue;
 					}
 					if (rows.length <= 77) {
-						logger.info("Line:" + (i + 1)
+						System.out.println("Line:" + (i + 1)
 								+ " format error! column size too small:"
 								+ rows.length);
 						continue;
 					}
 					if (!FileUtil.isNumeric(rows[76])) {
-						logger.info("Line:" + (i + 1)
+						System.out.println("Line:" + (i + 1)
 								+ " format error! BAZ001 is not number:"
 								+ rows[76]);
 						continue;
@@ -94,7 +89,7 @@ public class RecipeFileIndexer {
 								hosList);
 						docs.add(recipe);
 					} else {
-						logger.info("Line:" + (i + 1)
+						System.out.println("Line:" + (i + 1)
 								+ " format error! row length:" + rows.length
 								+ ", cols size:" + cols.size());
 						// System.exit(0);
@@ -105,11 +100,12 @@ public class RecipeFileIndexer {
 				solr.addBeans(docs);
 				solr.commit();
 				long end = System.currentTimeMillis();
-				logger.info("index parser spent:" + (end - start) / 1000 + "s");
+				System.out.println("index parser spent:" + (end - start) / 1000
+						+ "s");
 			}
 			long allend = System.currentTimeMillis();
-			logger.info("Total index parser spent:" + (allend - allstart)
-					/ 1000 + "s");
+			System.out.println("Total index parser spent:"
+					+ (allend - allstart) / 1000 + "s");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
