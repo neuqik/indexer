@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
 import net.wonderslife.util.FileUtil;
 import net.wonderslife.util.PropertyUtil;
@@ -20,6 +21,7 @@ import org.jsoup.select.Elements;
 public class PharmaIndexer {
 
 	public static void main(String[] args) {
+		Random rand = new Random(10000);
 		PharmaIndexer pi = new PharmaIndexer();
 		List<Pharma> docs = new ArrayList<Pharma>();
 		try {
@@ -38,9 +40,11 @@ public class PharmaIndexer {
 				Pharma p = pi.parseHTML(file);
 				if (p != null) {
 					System.out.println("added " + file);
+
 					p.setBAZ001(p.getTYM() + "-" + p.getSCQY());
 					p.setOwner("user1");
 					p.setContent_level("free");
+					p.setID(String.valueOf(Math.abs(rand.nextInt())));
 					docs.add(p);
 				}
 			}

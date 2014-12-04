@@ -10,6 +10,8 @@ import org.apache.solr.client.solrj.beans.Field;
  */
 public class Pharma {
 	@Field
+	String ID;
+	@Field
 	String BAZ001;
 	@Field("通用名")
 	String TYM;
@@ -168,6 +170,14 @@ public class Pharma {
 
 	public void setPZWH(String pZWH) {
 		PZWH = pZWH;
+	}
+
+	public String getID() {
+		return ID;
+	}
+
+	public void setID(String iD) {
+		ID = iD;
 	}
 
 }
