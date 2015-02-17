@@ -102,7 +102,7 @@ public class PharmaIndexer {
 				String info = e.select(".info").get(0).toString()
 						.replaceAll("<p class=\"info\">", "")
 						.replaceAll("</p>", "").replaceAll("\r", "")
-						.replaceAll("\n", "");
+						.replaceAll("\n", "").replaceAll("dxy", "");
 				if ("".equals(info)) {
 					// System.out.println(col);
 					if (e.select("ol").size() <= 0) {
