@@ -41,9 +41,21 @@ public class HospitalOrgList {
 	}
 
 	/**
+	 * 获取医院名称
+	 * 
+	 * @param code
+	 * @return
+	 * @throws Exception
+	 */
+	public String getHosName(Object code) throws Exception {
+		return getHosName(String.valueOf(code));
+	}
+
+	/**
 	 * 获取医院名称AKB021
 	 * 
-	 * @param code 医院编码
+	 * @param code
+	 *            医院编码
 	 * @return
 	 * @throws Exception
 	 */
@@ -57,6 +69,15 @@ public class HospitalOrgList {
 			}
 		}
 		return hosName;
+	}
+	/**
+	 * 获取医院机构类型AKB022
+	 * @param code
+	 * @return
+	 * @throws Exception
+	 */
+	public String getHosType(Object code) throws Exception {
+		return getHosType(String.valueOf(code));
 	}
 
 	/**
