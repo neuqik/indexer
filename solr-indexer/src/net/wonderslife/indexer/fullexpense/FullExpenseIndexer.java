@@ -21,7 +21,7 @@ import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import org.apache.solr.core.CoreContainer;
 
 public class FullExpenseIndexer {
-	
+
 	/**
 	 * 并行最大程度调度执行索引 
 	 * 1.这是一个统一的调度进程，负责调度所有的数据索引进程 
@@ -45,9 +45,10 @@ public class FullExpenseIndexer {
 	 * 										|____ index_fail.log 索引失败的进程
 	 * 								|___ data 合并后的索引文件目录
 	 * 								|___ solr solr配置文件
+	 * @throws IOException 
 	 * 
 	 */
-	public static void indexFullExpense() {
+	public static void indexFullExpense(String srcPath) throws IOException {
 		// 设置多个进程，使用拷贝方式
 		Logger log = null;
 		String workspace = "";
@@ -96,19 +97,30 @@ public class FullExpenseIndexer {
 		log.debug(">>>>>>>>indexer begin>>>>>>>");
 		log.debug(">>>>>>>>>>directory initial>>>>>>>>>>");
 		// 获取要生成的文件数量
-		int totalPages = rowCount / pageSize + 1;
+		int totalPages = rowCount / pageSize ;
 		for (int i = 1; i <= totalPages; i++) {
-			dirs = new File(workspace + INDEX_DIR + "/indexer" + i);
+			String fileName = workspace + INDEX_DIR + "/indexer" + i;
+			dirs = new File(fileName);
 			dirs.mkdir();
+			// 3.拷贝文件，从参数中获取源文件目录地址
+			FileUtils.copyDirectory(new File(srcPath), dirs);
+			// 读取这个目录中的index.properties，修改处理开始页和终止页
+			PropertyUtil.writeProperties(fileName+"/indexer.properties", "solr.fullexpense.startpage", String.valueOf(i));
+			PropertyUtil.writeProperties(fileName+"/indexer.properties", "solr.fullexpense.endpage", String.valueOf(i));
+			PropertyUtil.writeProperties(fileName+"/indexer.properties", "solr.fullexpense.pagesize", String.valueOf(pageSize));
 		}
 		log.debug(">>>>>>>>>>indexer split : " + totalPages + ">>>>>>>>>>");
-		// 3.拷贝文件，从参数中获取源文件目录地址
+
 		// 4.执行每个索引进程
 		// 5.主进程检查已经分配运行的进程，查看其日志结果，如果没有成功，则记录下来，然后启动另外的进程
 
 	}
 
 	public static void main(String[] args) {
-		FullExpenseIndexer.indexFullExpense();
+		try {
+			FullExpenseIndexer.indexFullExpense("D:\\temp\\indexsrc");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }
