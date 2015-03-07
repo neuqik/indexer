@@ -1,24 +1,17 @@
 package net.wonderslife.indexer.fullexpense;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.Collection;
 
-import net.wonderslife.indexer.base.CodeList;
-import net.wonderslife.indexer.base.HospitalOrgList;
-import net.wonderslife.util.JDBCUtil;
 import net.wonderslife.util.PropertyUtil;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.apache.solr.client.solrj.SolrServer;
-import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
-import org.apache.solr.client.solrj.impl.HttpSolrServer;
-import org.apache.solr.core.CoreContainer;
 
 public class FullExpenseIndexer {
 
@@ -36,8 +29,8 @@ public class FullExpenseIndexer {
 	 * 										|____ indexer..n 
 	 * 								|___ merge 合并进程 
 	 * 								|___ logs 所有日志 
-	 * 										|____ indexer1.log 索引进程 
-	 * 										|____ indexer..n.log 
+	 * 										|____ 1.log 索引进程 
+	 * 										|____ n.log 
 	 * 										|____ indexer.log 调度进程 
 	 * 										|____ merge1.log 合并进程 
 	 * 										|____ merge..n.log 
@@ -46,12 +39,16 @@ public class FullExpenseIndexer {
 	 * 								|___ data 合并后的索引文件目录
 	 * 								|___ solr solr配置文件
 	 * @throws IOException 
+	 * @throws InterruptedException 
 	 * 
 	 */
-	public static void indexFullExpense(String srcPath) throws IOException {
+	public static void indexFullExpense(String srcPath) throws IOException,
+			InterruptedException {
 		// 设置多个进程，使用拷贝方式
 		Logger log = null;
 		String workspace = "";
+		String core = "";
+
 		int rowCount = 0;
 		int pageSize = 0;
 		final String INDEX_DIR = "/indexers";
@@ -63,6 +60,7 @@ public class FullExpenseIndexer {
 		File ws = null;
 		try {
 			workspace = PropertyUtil.get("solr.distribute.index.workspace");
+			core = PropertyUtil.get("solr.distribute.index.core");
 			System.setProperty("WORKDIR", workspace);
 			log = Logger.getLogger(FullExpenseIndexer.class);
 			rowCount = Integer.parseInt(PropertyUtil
@@ -80,7 +78,9 @@ public class FullExpenseIndexer {
 			FileUtils.deleteQuietly(ws);
 		}
 		ws.mkdirs();
-
+		File view = new File(workspace + "/process.sh");
+		FileUtils.write(view, "ps -ef|grep solr-indexer.jar|grep -v grep");
+		view.setExecutable(true);
 		// 2.建立目录结构
 		// 2.1.建立索引进程目录
 
@@ -97,30 +97,164 @@ public class FullExpenseIndexer {
 		log.debug(">>>>>>>>indexer begin>>>>>>>");
 		log.debug(">>>>>>>>>>directory initial>>>>>>>>>>");
 		// 获取要生成的文件数量
-		int totalPages = rowCount / pageSize ;
+		int totalPages = rowCount / pageSize;
 		for (int i = 1; i <= totalPages; i++) {
 			String fileName = workspace + INDEX_DIR + "/indexer" + i;
 			dirs = new File(fileName);
 			dirs.mkdir();
 			// 3.拷贝文件，从参数中获取源文件目录地址
-			FileUtils.copyDirectory(new File(srcPath), dirs);
-			// 读取这个目录中的index.properties，修改处理开始页和终止页
-			PropertyUtil.writeProperties(fileName+"/indexer.properties", "solr.fullexpense.startpage", String.valueOf(i));
-			PropertyUtil.writeProperties(fileName+"/indexer.properties", "solr.fullexpense.endpage", String.valueOf(i));
-			PropertyUtil.writeProperties(fileName+"/indexer.properties", "solr.fullexpense.pagesize", String.valueOf(pageSize));
+			// FileUtils.copyDirectory(new File(srcPath), dirs);
+			// // 读取这个目录中的index.properties，修改处理开始页和终止页
+			// PropertyUtil.writeProperties(fileName + "/indexer.properties",
+			// "solr.fullexpense.startpage", String.valueOf(i));
+			// PropertyUtil.writeProperties(fileName + "/indexer.properties",
+			// "solr.fullexpense.endpage", String.valueOf(i));
+			// PropertyUtil.writeProperties(fileName + "/indexer.properties",
+			// "solr.fullexpense.pagesize", String.valueOf(pageSize));
 		}
 		log.debug(">>>>>>>>>>indexer split : " + totalPages + ">>>>>>>>>>");
 
 		// 4.执行每个索引进程
 		// 5.主进程检查已经分配运行的进程，查看其日志结果，如果没有成功，则记录下来，然后启动另外的进程
+		int thread = Integer.parseInt(PropertyUtil
+				.get("solr.distribute.index.thread"));
+		log.debug(">>>>>>>>>>indexer executing : " + thread + ">>>>>>>>>>");
+		boolean con = true;
+		while (con) {
+			log.debug(">>>>>>>>>>thread is checking background process count...");
+			// 判断当前系统中执行的进程名字
+			Process p = Runtime.getRuntime().exec(workspace + "/process.sh");
+			String output = inputStream2String(p.getInputStream());
+			int n = StringUtils.countMatches(output.toLowerCase(),
+					"solr-indexer.jar");
+			// 如果当前线程数小于指定线程，创建thread-n个
+			if (n < thread) {
+				for (int i = 1; i <= thread - n; i++) {
+					int next = getCurrentThread(workspace + LOG_DIR) + 1;
+					String destFile = workspace + INDEX_DIR + "/indexer" + next;
+					FileUtils.copyDirectory(new File(srcPath), new File(
+							destFile));
+					// 读取这个目录中的index.properties，修改处理开始页和终止页
+					PropertyUtil.writeProperties(destFile
+							+ "/indexer.properties",
+							"solr.fullexpense.startpage", String.valueOf(next));
+					PropertyUtil.writeProperties(destFile
+							+ "/indexer.properties",
+							"solr.fullexpense.endpage", String.valueOf(next));
+					PropertyUtil.writeProperties(destFile
+							+ "/indexer.properties",
+							"solr.fullexpense.pagesize",
+							String.valueOf(pageSize));
+					PropertyUtil.writeProperties(destFile
+							+ "/indexer.properties",
+							"solr.fullexpense.embedded.solrhome", destFile
+									+ "/solr");
+					// 后台运行
+					String cmd = "nohup java -jar " + destFile
+							+ "/solr-indexer.jar > " + workspace + LOG_DIR
+							+ "/" + next + ".log 2>&1 &";
+					File script = new File(destFile + "/run.sh");
+					FileUtils.write(script, cmd);
+					script.setExecutable(true);
+					Runtime.getRuntime().exec(destFile + "/run.sh");
+
+					log.debug(">>>>>>>>>> created thread" + next);
+					setCurrentThread(workspace + LOG_DIR, next);
+					// 如果下一个线程已经超过了总页数，则进程结束
+					if (next > totalPages) {
+						log.debug(">>>>>>>>indexer end>>>>>>>");
+						con = false;
+						break;
+					}
+				}
+			} else {
+				log.debug(">>>>>>>>>>thread will sleep 60s.");
+				Thread.sleep(60000);// 睡1分钟然后继续
+			}
+			// 执行shell命令判断有几个进程存活
+			// 根据与thread的差距启动进程，启动的顺序按照目录顺序启动，写入调度文件
+			// 执行shell脚本启动命令，记录日志
+			// 每隔30秒挨个检查一下正在运行的进程的执行日志，看是否执行成功，执行成功的写入调度文件
+		}
+	}
+
+	/**
+	* 设置当前线程号文件名
+	* 
+	* @param next
+	* @throws IOException
+	*/
+	private static void setCurrentThread(String dir, int next)
+			throws IOException {
+		// 判断是否存在.lock文件，文件名是当前分配的最后进程
+		Collection<File> files = FileUtils.listFiles(new File(dir),
+				new String[] { "lock" }, false);
+		if (files.size() <= 0) {
+			File f = new File(dir + "/0.lock");
+			FileUtils.write(f, "0", true);
+		} else if (files.size() != 1) {
+			throw new IOException("Exists " + files.size() + " of .lock files!");
+		} else {
+			// 改名此文件
+			File f = (File) files.toArray()[0];
+			FileUtils.moveFile(f, new File(dir + "/" + next + ".lock"));
+		}
+
+	}
+
+	/**
+	* 获取当前Thread数
+	* 
+	* @dir 记录文件的位置
+	* @return
+	* @throws IOException
+	*/
+	private static int getCurrentThread(String dir) throws IOException {
+		// 判断是否存在.lock文件，文件名是当前分配的最后进程
+		Collection<File> files = FileUtils.listFiles(new File(dir),
+				new String[] { "lock" }, false);
+		if (files.size() <= 0) {
+			File f = new File(dir + "/0.lock");
+			FileUtils.write(f, "0", true);
+			return 0;
+		} else if (files.size() != 1) {
+			throw new IOException("Exists " + files.size() + " of .lock files!");
+		} else {
+			// 取当前文件名返回
+			File f = (File) files.toArray()[0];
+			String fname = f.getName();
+			int no = Integer.parseInt(fname.replace(".lock", ""));
+			return no;
+		}
 
 	}
 
 	public static void main(String[] args) {
 		try {
-			FullExpenseIndexer.indexFullExpense("D:\\temp\\indexsrc");
+			String src = PropertyUtil.get("solr.distribute.index.srcdir");
+			FullExpenseIndexer.indexFullExpense(src);
 		} catch (IOException e) {
 			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
+	}
+
+	/**
+	* inputstream转字符
+	* 
+	* @param is
+	* @return
+	* @throws IOException
+	*/
+	private static String inputStream2String(InputStream is) throws IOException {
+		BufferedReader in = new BufferedReader(new InputStreamReader(is));
+		StringBuffer buffer = new StringBuffer();
+		String line = "";
+		while ((line = in.readLine()) != null) {
+			buffer.append(line);
+		}
+		in.close();
+		return buffer.toString();
 	}
 }
