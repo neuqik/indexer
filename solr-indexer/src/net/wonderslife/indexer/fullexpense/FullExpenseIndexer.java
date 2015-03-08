@@ -51,6 +51,7 @@ public class FullExpenseIndexer {
 
 		int rowCount = 0;
 		int pageSize = 0;
+		int sleep = 0;
 		final String INDEX_DIR = "/indexers";
 		final String MERGE_DIR = "/merge";
 		final String LOG_DIR = "/logs";
@@ -67,6 +68,7 @@ public class FullExpenseIndexer {
 					.get("solr.distribute.index.rowcount"));
 			pageSize = Integer.parseInt(PropertyUtil
 					.get("solr.distribute.index.pagesize"));
+			sleep = Integer.parseInt(PropertyUtil.get("solr.distribute.sleep"));
 			ws = new File(workspace);
 		} catch (IOException e1) {
 			e1.printStackTrace();
@@ -129,6 +131,7 @@ public class FullExpenseIndexer {
 					"solr-indexer.jar");
 			// 如果当前线程数小于指定线程，创建thread-n个
 			if (n < thread) {
+				// 如果不足，则判断是否有执行完成的，并删掉对应的jar文件
 				for (int i = 1; i <= thread - n; i++) {
 					int next = getCurrentThread(workspace + LOG_DIR) + 1;
 					String destFile = workspace + INDEX_DIR + "/indexer" + next;
@@ -158,18 +161,18 @@ public class FullExpenseIndexer {
 					script.setExecutable(true);
 					Runtime.getRuntime().exec(destFile + "/run.sh");
 
-					log.debug(">>>>>>>>>> created thread" + next);
+					log.debug(">>>>>>>>>> created process" + next);
 					setCurrentThread(workspace + LOG_DIR, next);
 					// 如果下一个线程已经超过了总页数，则进程结束
 					if (next > totalPages) {
-						log.debug(">>>>>>>>indexer end>>>>>>>");
+						log.debug(">>>>>>>> indexer end>>>>>>>");
 						con = false;
 						break;
 					}
 				}
 			} else {
-				log.debug(">>>>>>>>>>thread will sleep 60s.");
-				Thread.sleep(60000);// 睡1分钟然后继续
+				log.debug(">>>>>>>>>> thread will sleep " + sleep + "ms.");
+				Thread.sleep(sleep);// 睡1分钟然后继续
 			}
 			// 执行shell命令判断有几个进程存活
 			// 根据与thread的差距启动进程，启动的顺序按照目录顺序启动，写入调度文件

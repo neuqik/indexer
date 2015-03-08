@@ -247,7 +247,7 @@ public class FullExpenseIndexerSingle {
 			System.out.println(">>>>>>>>>>>>>Total:"
 
 			+ ((allend - allstart) / 1000) + "s>>>>>>>>>>>");
-
+			
 			System.exit(0);
 
 		} catch (Exception e) {
