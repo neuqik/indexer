@@ -1,10 +1,7 @@
 package net.wonderslife.indexer.fullexpense;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.Collection;
 
 import net.wonderslife.util.PropertyUtil;
@@ -126,7 +123,7 @@ public class FullExpenseIndexer {
 			log.debug(">>>>>>>>>>thread is checking background process count...");
 			// 判断当前系统中执行的进程名字
 			Process p = Runtime.getRuntime().exec(workspace + "/process.sh");
-			String output = inputStream2String(p.getInputStream());
+			String output = FullExpenseUtil.inputStream2String(p.getInputStream());
 			int n = StringUtils.countMatches(output.toLowerCase(),
 					"solr-indexer.jar");
 			// 如果当前线程数小于指定线程，创建thread-n个
@@ -241,23 +238,5 @@ public class FullExpenseIndexer {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-	}
-
-	/**
-	* inputstream转字符
-	* 
-	* @param is
-	* @return
-	* @throws IOException
-	*/
-	private static String inputStream2String(InputStream is) throws IOException {
-		BufferedReader in = new BufferedReader(new InputStreamReader(is));
-		StringBuffer buffer = new StringBuffer();
-		String line = "";
-		while ((line = in.readLine()) != null) {
-			buffer.append(line);
-		}
-		in.close();
-		return buffer.toString();
 	}
 }
