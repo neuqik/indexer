@@ -76,64 +76,37 @@ public class FullExpenseIndexMerge {
 			pageSize = Integer.parseInt(PropertyUtil
 					.get("solr.distribute.index.pagesize"));
 			totalPages = rowCount / pageSize;
+			log.info(">>>>>> Last File:" + logdir + "/" + totalPages + ".log");
 		} catch (NumberFormatException e1) {
 			e1.printStackTrace();
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
+		//TODO:要解决的问题，1是最后一个循环不合并不关闭，2是循环逻辑的问题，最后一个如何退出
 		// 循环条件
 		while (condition) {
-			log.info(">>>>>>>>>> begin merge >>>>>>>>>workspace:"+workspace);
+			log.info(">>>>>>>>>> begin merge >>>>>>>>>workspace:" + workspace);
 
 			try {
 				// 睡眠等待
+				log.info(">>>>>>>>>> merge sleep :" + sleep / 1000 + "s");
 				Thread.sleep(sleep);
+
+				// 合并
+				// 索引进程已经正常执行完毕
+				Collection<File> files = FileUtils.listFiles(new File(logdir),
+						new String[] { "log" }, false);
+				// 判断每个file，如果file执行完成则合并并且删除
+				decideMerge(files, workspace);
 
 				// 判断最大的log文件名是多少
 				File lastLog = new File(logdir + "/" + totalPages + ".log");
 				if (lastLog.exists()) {
 					// 如果当前文件中有最大的日志文件，则处理完后结束此进程
-					// 索引进程已经正常执行完毕
-					Collection<File> files = FileUtils.listFiles(new File(
-							logdir), new String[] { "log" }, false);
-					// 判断每个file，如果file执行完成则合并并且删除
 					decideMerge(files, workspace);
 					condition = false;
 					break;
 				}
-				Process p = Runtime.getRuntime()
-						.exec(workspace + "/process.sh");
-				String output = FullExpenseUtil.inputStream2String(p
-						.getInputStream());
-				int n = StringUtils.countMatches(output.toLowerCase(),
-						"solr-indexer.jar");
-				if (n <= 0) {
-					// 如果没有solr-indexer进程，则在处理完当前的索引数据后
-					// 查找当前未处理的索引数据
-					// 退出进程
-					Collection<File> files = FileUtils.listFiles(new File(
-							logdir), new String[] { "log" }, false);
-					// 判断每个file，如果file执行完成则合并并且删除
-					decideMerge(files, workspace);
-					condition = false;
-					break;
-				}
-				if (n > 0) {
-					// 则还有索引进程没有完成
-					// 查找当前未处理的索引数据
-					Collection<File> files = FileUtils.listFiles(new File(
-							logdir), new String[] { "log" }, false);
-					// 判断每个file，如果file执行完成则合并并且删除
-					decideMerge(files, workspace);
-				}
-
-				// 读取当前剩余的logs目录下的*.log文件
-				// 如果最大的log文件已经产生，并且执行结束，就可以退出
-				// 根据log文件读取，如果产生了log文件，并其中最后一行是成功结束，则合并
-				// 合并后删除log文件和indexer中的对应jar
-				// 
-			} catch (IOException e) {
-				e.printStackTrace();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -163,6 +136,8 @@ public class FullExpenseIndexMerge {
 				int fileno = Integer.parseInt(file.getName()
 						.replace(".log", ""));
 				List<String> content = FileUtils.readLines(file);
+				if (content.size() == 0)
+					continue;
 				String last = content.get(content.size() - 1);
 				if (last.contains(">>>>>>>>>>>>>Total:")) {
 					// 已经执行完，合并目录到目标目录，合并完成删除源目录的jar文件和改名log文件为.done

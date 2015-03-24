@@ -117,13 +117,14 @@ public class FullExpenseIndexer {
 		// 5.主进程检查已经分配运行的进程，查看其日志结果，如果没有成功，则记录下来，然后启动另外的进程
 		int thread = Integer.parseInt(PropertyUtil
 				.get("solr.distribute.index.thread"));
-		log.debug(">>>>>>>>>>indexer executing : " + thread + ">>>>>>>>>>");
+		log.debug(">>>>>>>>>> indexer executing : " + thread + ">>>>>>>>>>");
 		boolean con = true;
 		while (con) {
-			log.debug(">>>>>>>>>>thread is checking background process count...");
+			log.debug(">>>>>>>>>> thread is checking background process count...");
 			// 判断当前系统中执行的进程名字
 			Process p = Runtime.getRuntime().exec(workspace + "/process.sh");
-			String output = FullExpenseUtil.inputStream2String(p.getInputStream());
+			String output = FullExpenseUtil.inputStream2String(p
+					.getInputStream());
 			int n = StringUtils.countMatches(output.toLowerCase(),
 					"solr-indexer.jar");
 			// 如果当前线程数小于指定线程，创建thread-n个
@@ -158,17 +159,17 @@ public class FullExpenseIndexer {
 					script.setExecutable(true);
 					Runtime.getRuntime().exec(destFile + "/run.sh");
 
-					log.debug(">>>>>>>>>> created process" + next);
+					log.debug(">>>>>>>>>> created process " + next);
 					setCurrentThread(workspace + LOG_DIR, next);
 					// 如果下一个线程已经超过了总页数，则进程结束
 					if (next > totalPages) {
-						log.debug(">>>>>>>> indexer end>>>>>>>");
+						log.debug(">>>>>>>> indexer end >>>>>>>");
 						con = false;
 						break;
 					}
 				}
 			} else {
-				log.debug(">>>>>>>>>> thread will sleep " + sleep + "ms.");
+				log.debug(">>>>>>>>>> thread will sleep " + sleep / 1000 + "s.");
 				Thread.sleep(sleep);// 睡1分钟然后继续
 			}
 			// 执行shell命令判断有几个进程存活
