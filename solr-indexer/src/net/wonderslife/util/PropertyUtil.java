@@ -19,8 +19,8 @@ public class PropertyUtil {
 		InputStream input = null;
 
 		Properties prop = new Properties();
-		input = new FileInputStream(PropertyUtil.class.getResource("/")
-				.getPath() + "indexer.properties");
+		input = new FileInputStream(System.getProperty("user.dir")
+				+ "/indexer.properties");
 		prop.load(input);
 		input.close();
 		return prop.getProperty(param);

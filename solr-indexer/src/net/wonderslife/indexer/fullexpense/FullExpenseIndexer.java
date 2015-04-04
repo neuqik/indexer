@@ -1,5 +1,8 @@
 package net.wonderslife.indexer.fullexpense;
 
+/**
+ * solr-distribute.jar
+ */
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
@@ -11,6 +14,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 public class FullExpenseIndexer {
+	public static final String INDEX_DIR = "/indexers";
 
 	/**
 	 * 并行最大程度调度执行索引 
@@ -45,11 +49,11 @@ public class FullExpenseIndexer {
 		Logger log = null;
 		String workspace = "";
 		String core = "";
+		String cacheDir = "";
 
 		int rowCount = 0;
 		int pageSize = 0;
 		int sleep = 0;
-		final String INDEX_DIR = "/indexers";
 		final String MERGE_DIR = "/merge";
 		final String LOG_DIR = "/logs";
 		final String DATA_DIR = "/data";
@@ -59,6 +63,7 @@ public class FullExpenseIndexer {
 		try {
 			workspace = PropertyUtil.get("solr.distribute.index.workspace");
 			core = PropertyUtil.get("solr.distribute.index.core");
+			cacheDir = PropertyUtil.get("solr.distribute.cache.dir");
 			System.setProperty("WORKDIR", workspace);
 			log = Logger.getLogger(FullExpenseIndexer.class);
 			rowCount = Integer.parseInt(PropertyUtil
@@ -69,14 +74,18 @@ public class FullExpenseIndexer {
 			ws = new File(workspace);
 		} catch (IOException e1) {
 			e1.printStackTrace();
+			System.exit(-1);
 		}
 		// 1.读取workspace目录，如果没有，则创建，如果有则强制删除，异常提示出来
-
 		// 如果目录存在，强制删除
 		if (ws.exists()) {
 			FileUtils.deleteQuietly(ws);
 		}
 		ws.mkdirs();
+		// 判断是否启动cache，如果启动cache，则删除cache的内容
+		if (!"".equals(cacheDir)) {
+			FileUtils.deleteQuietly(new File(cacheDir));
+		}
 		File view = new File(workspace + "/process.sh");
 		FileUtils.write(view, "ps -ef|grep solr-indexer.jar|grep -v grep");
 		view.setExecutable(true);
@@ -93,8 +102,8 @@ public class FullExpenseIndexer {
 		dirs.mkdir();
 		dirs = new File(workspace + SOLR_DIR);
 		dirs.mkdir();
-		log.debug(">>>>>>>>indexer begin>>>>>>>");
-		log.debug(">>>>>>>>>>directory initial>>>>>>>>>>");
+		System.out.println(">>>>>>>>indexer begin>>>>>>>");
+		System.out.println(">>>>>>>>>>directory initial>>>>>>>>>>");
 		// 获取要生成的文件数量
 		int totalPages = rowCount / pageSize;
 		for (int i = 1; i <= totalPages; i++) {
@@ -111,16 +120,19 @@ public class FullExpenseIndexer {
 			// PropertyUtil.writeProperties(fileName + "/indexer.properties",
 			// "solr.fullexpense.pagesize", String.valueOf(pageSize));
 		}
-		log.debug(">>>>>>>>>>indexer split : " + totalPages + ">>>>>>>>>>");
+		System.out.println(">>>>>>>>>>indexer split : " + totalPages
+				+ ">>>>>>>>>>");
 
 		// 4.执行每个索引进程
 		// 5.主进程检查已经分配运行的进程，查看其日志结果，如果没有成功，则记录下来，然后启动另外的进程
 		int thread = Integer.parseInt(PropertyUtil
 				.get("solr.distribute.index.thread"));
-		log.debug(">>>>>>>>>> indexer executing : " + thread + ">>>>>>>>>>");
+		System.out.println(">>>>>>>>>> indexer executing : " + thread
+				+ ">>>>>>>>>>");
 		boolean con = true;
 		while (con) {
-			log.debug(">>>>>>>>>> thread is checking background process count...");
+			System.out
+					.println(">>>>>>>>>> thread is checking background process count...");
 			// 判断当前系统中执行的进程名字
 			Process p = Runtime.getRuntime().exec(workspace + "/process.sh");
 			String output = FullExpenseUtil.inputStream2String(p
@@ -151,19 +163,46 @@ public class FullExpenseIndexer {
 							"solr.fullexpense.embedded.solrhome", destFile
 									+ "/solr");
 					// 后台运行
-					String cmd = "nohup java -jar " + destFile
-							+ "/solr-indexer.jar > " + workspace + LOG_DIR
-							+ "/" + next + ".log 2>&1 &";
-					File script = new File(destFile + "/run.sh");
-					FileUtils.write(script, cmd);
-					script.setExecutable(true);
-					Runtime.getRuntime().exec(destFile + "/run.sh");
-
-					log.debug(">>>>>>>>>> created process " + next);
+					// 判断是否启动cache，如果启动，则执行拷贝，再切换目录
+					String cmd = "";
+					// 没设置cache
+					if ("".equals(cacheDir)) {
+						cmd = "nohup java -jar " + destFile
+								+ "/solr-indexer.jar > " + workspace + LOG_DIR
+								+ "/" + next + ".log 2>&1 &";
+						File script = new File(destFile + "/run.sh");
+						FileUtils.write(script, cmd);
+						script.setExecutable(true);
+						Runtime.getRuntime().exec(
+								new String[] { "cd " + destFile,
+										destFile + "/run.sh" });
+						System.out
+								.println(">>>>>>>>>> created process " + next);
+					} else {
+						// 拷贝到cache
+						String cacheFile = cacheDir + "/indexer" + next;
+						FileUtils.copyDirectory(new File(destFile), new File(
+								cacheFile));
+						FileUtils.deleteQuietly(new File(destFile));
+						PropertyUtil.writeProperties(cacheFile
+								+ "/indexer.properties",
+								"solr.fullexpense.embedded.solrhome", cacheFile
+										+ "/solr");
+						cmd = " cd " + cacheFile + " | nohup java -Duser.dir="
+								+ cacheFile + " -jar " + cacheFile
+								+ "/solr-indexer.jar > " + workspace + LOG_DIR
+								+ "/" + next + ".log 2>&1 &";
+						File script = new File(cacheFile + "/run.sh");
+						FileUtils.write(script, cmd);
+						script.setExecutable(true);
+						Runtime.getRuntime().exec(cacheFile + "/run.sh");
+						System.out.println(">>>>>>>>>> created cached process "
+								+ next);
+					}
 					setCurrentThread(workspace + LOG_DIR, next);
 					// 如果下一个线程已经超过了总页数，则进程结束
 					if (next > totalPages) {
-						log.debug(">>>>>>>> indexer end >>>>>>>");
+						System.out.println(">>>>>>>> indexer end >>>>>>>");
 						con = false;
 						break;
 					}
@@ -236,8 +275,10 @@ public class FullExpenseIndexer {
 			FullExpenseIndexer.indexFullExpense(src);
 		} catch (IOException e) {
 			e.printStackTrace();
+			System.exit(-1);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
+			System.exit(-1);
 		}
 	}
 }

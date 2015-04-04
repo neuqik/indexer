@@ -1,5 +1,8 @@
 package net.wonderslife.indexer.fullexpense;
 
+/**
+ * solr-merge.jar
+ */
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
@@ -89,7 +92,8 @@ public class FullExpenseIndexMerge {
 
 			try {
 				// 睡眠等待
-				log.info(">>>>>>>>>> merge sleep :" + sleep / 1000 + "s");
+				System.out.println(">>>>>>>>>> merge sleep :" + sleep / 1000
+						+ "s");
 				Thread.sleep(sleep);
 
 				// 合并
@@ -109,6 +113,7 @@ public class FullExpenseIndexMerge {
 				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();
+				System.exit(-1);
 			}
 		}
 		//			String fromdir = PropertyUtil
@@ -156,6 +161,7 @@ public class FullExpenseIndexMerge {
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
+				System.exit(-1);
 			}
 
 		}

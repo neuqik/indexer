@@ -1,5 +1,11 @@
 package net.wonderslife.indexer.fullexpense;
 
+/**
+ * solr-indexer.jar
+ */
+/**
+ * 注意：如果需要单独线程执行，必须将indexer.properties中的cache.dir设置为空
+ */
 import java.io.File;
 
 import java.io.IOException;
@@ -20,6 +26,7 @@ import net.wonderslife.util.JDBCUtil;
 
 import net.wonderslife.util.PropertyUtil;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.solr.client.solrj.SolrServer;
 
 import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
@@ -37,30 +44,23 @@ public class FullExpenseIndexerSingle {
 	 */
 
 	public static void main(String[] args) {
-
 		int pageSize = 0;
-
 		int rowCount = 0;// 总行数
-
 		int startPage = 0;// 最后页数
-
 		int endPage = 0;
-
 		int totalPages = 0;
-
 		String parallStr = "";
-
 		int parall = 0;
-
+		String cacheDir = "";
+		String workspace = "";
 		try {
-
+			// 当前页面
+			cacheDir = PropertyUtil.get("solr.distribute.cache.dir");
+			workspace = PropertyUtil.get("solr.distribute.index.workspace");
 			pageSize = Integer.parseInt(PropertyUtil
-
-			.get("solr.fullexpense.pagesize"));
-
+					.get("solr.fullexpense.pagesize"));
 			rowCount = Integer.parseInt(PropertyUtil
-
-			.get("solr.fullexpense.rowcount"));
+					.get("solr.fullexpense.rowcount"));
 
 			startPage = Integer.parseInt(PropertyUtil.get(
 
@@ -105,11 +105,12 @@ public class FullExpenseIndexerSingle {
 		} catch (NumberFormatException e1) {
 
 			e1.printStackTrace();
+			System.exit(-1);
 
 		} catch (IOException e1) {
 
 			e1.printStackTrace();
-
+			System.exit(-1);
 		} // 20条一提交solr
 
 		int count = totalPages;// 计数器
@@ -147,13 +148,9 @@ public class FullExpenseIndexerSingle {
 			if ("EmbeddedSolrServer".equals(solrurl)) {
 
 				String solrhome = PropertyUtil
-
-				.get("solr.fullexpense.embedded.solrhome");
-
+						.get("solr.fullexpense.embedded.solrhome");
 				if ("".equals(solrhome)) {
-
 					System.out
-
 							.println("please set up solr.fullexpense.embedded.solrhome first.");
 
 					return;
@@ -162,7 +159,7 @@ public class FullExpenseIndexerSingle {
 
 				// 设置嵌入式模式
 
-				System.setProperty("solr.solr.home", solrhome);
+				//				System.setProperty("solr.solr.home", solrhome);
 
 				CoreContainer coreContainer = CoreContainer.createAndLoad(
 
@@ -241,19 +238,28 @@ public class FullExpenseIndexerSingle {
 				System.out.println("indexed docs:" + result.size());
 
 			}
+			// 判断是否设置了分布式索引和cache加速，如果有设置，则将自己拷贝回分布式处理，处理完成后删除自己
 
+			// 如果设置了cache并且是分布式处理
+			if (!"".equals(cacheDir) & !"".equals(workspace)) {
+				String destFile = workspace + FullExpenseIndexer.INDEX_DIR;
+				String srcFile = cacheDir + "/indexer" + startPage + "/solr";
+				FileUtils.moveDirectoryToDirectory(new File(srcFile), new File(
+						destFile + "/indexer" + startPage), true);
+				FileUtils.deleteQuietly(new File(cacheDir + "/indexer"
+						+ startPage));
+			}
 			long allend = System.currentTimeMillis();
 
 			System.out.println(">>>>>>>>>>>>>Total:"
 
 			+ ((allend - allstart) / 1000) + "s>>>>>>>>>>>");
-			
+
 			System.exit(0);
 
 		} catch (Exception e) {
-
 			e.printStackTrace();
-
+			System.exit(-1);
 		}
 
 	}
