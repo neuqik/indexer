@@ -90,7 +90,7 @@ public class JDBCUtil {
 	}
 
 	/**
-	 * 关闭连接，建议在finally中使�?
+	 * 关闭连接，建议在finally中使用
 	 * 
 	 */
 	public static void closeConnection(Connection conn) throws SQLException {
@@ -131,5 +131,43 @@ public class JDBCUtil {
 		} else {
 			return solrURL;
 		}
+	}
+
+	/**
+	 * 控制conn的关闭
+	 * @param sql
+	 * @param conn
+	 * @param param
+	 * @param b 是否关闭conn
+	 * @return
+	 * @throws SQLException
+	 */
+	public static List<Map<String, Object>> executeQuery(String sql,
+			Connection conn, List<Object> param, boolean b) throws SQLException {
+		List<Map<String, Object>> data = new ArrayList<Map<String, Object>>();
+		PreparedStatement stmt = conn.prepareStatement(sql);
+		if (param != null) {
+			for (int i = 0; i < param.size(); i++) {
+				stmt.setObject(i + 1, param.get(i));
+			}
+		}
+		ResultSet rs = stmt.executeQuery();
+		try {
+			ResultSetMetaData rsmd = rs.getMetaData();
+			while (rs.next()) {
+				Map<String, Object> row = new HashMap<String, Object>();
+				for (int i = 1; i <= rsmd.getColumnCount(); i++) {
+					row.put(rsmd.getColumnName(i), rs.getObject(i) == null ? ""
+							: rs.getObject(i));
+				}
+				data.add(row);
+			}
+		} finally {
+			rs.close();
+			stmt.close();
+			if (b)
+				closeConnection(conn);
+		}
+		return data;
 	}
 }

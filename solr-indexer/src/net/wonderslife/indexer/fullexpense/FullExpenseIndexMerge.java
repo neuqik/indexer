@@ -12,9 +12,8 @@ import java.util.List;
 import net.wonderslife.util.PropertyUtil;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.IndexWriterConfig.OpenMode;
@@ -24,6 +23,9 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
 
+import com.chenlb.mmseg4j.Dictionary;
+import com.chenlb.mmseg4j.analysis.ComplexAnalyzer;
+
 public class FullExpenseIndexMerge {
 	// 连接两个或多个索引
 	public final static String INDEX_DIR = "/indexers";
@@ -32,7 +34,51 @@ public class FullExpenseIndexMerge {
 	public final static String DATA_DIR = "/data";
 	public final static String SOLR_DIR = "/solr";
 
-	private static void mergeIndex(File from, File to, StandardAnalyzer sa)
+	/**
+	 * 带合并参数的merge语句
+	 * @param from
+	 * @param to
+	 * @param sa
+	 * @param mergeforce 要合并的数量
+	 * @throws IOException
+	 */
+	private static void mergeIndex(File from, File to, Analyzer sa,
+			int mergeforce) throws IOException {
+		long begin = System.currentTimeMillis();
+		IndexWriter iw = null;
+
+		System.out.println("Index merging, from " + from + " to " + to);
+
+		Directory toD = FSDirectory.open(to);
+		IndexWriterConfig iwc = new IndexWriterConfig(Version.LUCENE_47, sa);
+		iwc.setOpenMode(OpenMode.CREATE_OR_APPEND); // 创建和添加索引
+
+		LogMergePolicy mp = new LogByteSizeMergePolicy();
+		mp.setMergeFactor(Integer.MAX_VALUE); // 提高批量速度
+		mp.setMaxMergeDocs(Integer.MAX_VALUE);
+		iwc.setMergePolicy(mp);
+
+		iw = new IndexWriter(toD, iwc);
+		Directory fromD = FSDirectory.open(from);
+		iw.addIndexes(fromD);
+		iw.forceMerge(mergeforce);
+		iw.commit();
+		iw.close();
+		System.out.println("Index merged.");
+		long end = System.currentTimeMillis();
+		System.out.println("merge spent:" + (end - begin) / 1000 + "s");
+
+	}
+
+	/**
+	 * 不强制合并
+	 * @param from
+	 * @param to
+	 * @param sa
+	 * @param last 是否最后一次合并
+	 * @throws IOException
+	 */
+	private static void mergeIndex(File from, File to, Analyzer sa, boolean last)
 			throws IOException {
 		long begin = System.currentTimeMillis();
 		IndexWriter iw = null;
@@ -51,6 +97,9 @@ public class FullExpenseIndexMerge {
 		iw = new IndexWriter(toD, iwc);
 		Directory fromD = FSDirectory.open(from);
 		iw.addIndexes(fromD);
+		if (last) {
+			iw.forceMerge(1);
+		}
 		iw.commit();
 		iw.close();
 		System.out.println("Index merged.");
@@ -95,21 +144,20 @@ public class FullExpenseIndexMerge {
 				System.out.println(">>>>>>>>>> merge sleep :" + sleep / 1000
 						+ "s");
 				Thread.sleep(sleep);
-
-				// 合并
 				// 索引进程已经正常执行完毕
 				Collection<File> files = FileUtils.listFiles(new File(logdir),
 						new String[] { "log" }, false);
-				// 判断每个file，如果file执行完成则合并并且删除
-				decideMerge(files, workspace);
-
 				// 判断最大的log文件名是多少
 				File lastLog = new File(logdir + "/" + totalPages + ".log");
 				if (lastLog.exists()) {
-					// 如果当前文件中有最大的日志文件，则处理完后结束此进程
-					decideMerge(files, workspace);
+					// 如果当前文件中有最大的日志文件，则处理完后结束此进程，将文件合并成1个
+					decideMerge(files, workspace, true);
 					condition = false;
 					break;
+				} else {
+					// 合并
+					// 判断每个file，如果file执行完成则合并并且删除
+					decideMerge(files, workspace, false);
 				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();
@@ -130,8 +178,15 @@ public class FullExpenseIndexMerge {
 
 	}
 
+	/**
+	 * 判断是否合并
+	 * @param files
+	 * @param workspace
+	 * @param lastMerge 是否最后一次合并
+	 */
 	// 判断并决定是否合并
-	private static void decideMerge(Collection<File> files, String workspace) {
+	private static void decideMerge(Collection<File> files, String workspace,
+			boolean lastMerge) {
 		// 循环判断每个日志
 		Iterator<File> it = files.iterator();
 		while (it.hasNext()) {
@@ -149,8 +204,26 @@ public class FullExpenseIndexMerge {
 					String from = workspace + INDEX_DIR + "/indexer" + fileno
 							+ "/solr/collection1/data/index";
 					String to = workspace + MERGE_DIR;
-					mergeIndex(new File(from), new File(to),
-							new StandardAnalyzer(Version.LUCENE_47));
+					// 如果是最后一次合并，并且是最后一个文件，则合并成一个文件
+					if (lastMerge && it.hasNext() == false) {
+						mergeIndex(
+								new File(from),
+								new File(to),
+								new ComplexAnalyzer(Dictionary
+										.getInstance(workspace + INDEX_DIR
+												+ "/indexer" + fileno
+												+ "/solr/collection1/dict")),
+								true);
+					} else {
+						mergeIndex(
+								new File(from),
+								new File(to),
+								new ComplexAnalyzer(Dictionary
+										.getInstance(workspace + INDEX_DIR
+												+ "/indexer" + fileno
+												+ "/solr/collection1/dict")),
+								false);
+					}
 					// 节省空间，删除jar
 					FileUtils.deleteQuietly(new File(workspace + INDEX_DIR
 							+ "/indexer" + fileno + "/solr-indexer.jar"));
@@ -163,7 +236,7 @@ public class FullExpenseIndexMerge {
 				e.printStackTrace();
 				System.exit(-1);
 			}
-
 		}
 	}
+
 }

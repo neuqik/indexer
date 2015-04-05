@@ -61,180 +61,109 @@ public class FullExpenseIndexerSingle {
 					.get("solr.fullexpense.pagesize"));
 			rowCount = Integer.parseInt(PropertyUtil
 					.get("solr.fullexpense.rowcount"));
-
 			startPage = Integer.parseInt(PropertyUtil.get(
-
-			"solr.fullexpense.startpage").equals("") ? "0"
-
-			: PropertyUtil.get("solr.fullexpense.startpage"));
-
+					"solr.fullexpense.startpage").equals("") ? "0"
+					: PropertyUtil.get("solr.fullexpense.startpage"));
 			if (startPage <= 0) {
-
 				startPage = 1;
-
 			}
-
 			endPage = Integer.parseInt(PropertyUtil.get(
-
-			"solr.fullexpense.endpage").equals("") ? "0" : PropertyUtil
-
-			.get("solr.fullexpense.endpage"));
-
+					"solr.fullexpense.endpage").equals("") ? "0" : PropertyUtil
+					.get("solr.fullexpense.endpage"));
 			if (endPage <= 0) {
-
 				totalPages = rowCount / pageSize;
 
 			} else {
-
 				totalPages = endPage;
-
 			}
-
 			parall = Integer.parseInt(PropertyUtil.get(
-
-			"solr.fullexpense.parall").equals("") ? "0" : PropertyUtil
-
-			.get("solr.fullexpense.parall"));
-
+					"solr.fullexpense.parall").equals("") ? "0" : PropertyUtil
+					.get("solr.fullexpense.parall"));
 			if (parall > 0) {
-
 				parallStr = "/*+ parallel(" + parall + ")  */";
-
 			}
 
 		} catch (NumberFormatException e1) {
-
 			e1.printStackTrace();
 			System.exit(-1);
-
 		} catch (IOException e1) {
-
 			e1.printStackTrace();
 			System.exit(-1);
 		} // 20条一提交solr
-
 		int count = totalPages;// 计数器
-
 		// count = totalPages;
-
 		System.out.println("total pages:" + (count - startPage + 1));
-
 		Connection conn = null;
-
 		long allstart = System.currentTimeMillis();
-
 		try {
-
 			// 1.加载缓存 AA10_TABLE和医院名称
-
 			CodeList codeList = new CodeList();
-
 			// 1.1.初始化代码表
-
 			codeList.init();
-
 			HospitalOrgList hosList = new HospitalOrgList();
-
 			hosList.init(codeList);
-
 			// setup SolrJ enviroment
-
 			// 判断solr服务器
-
 			SolrServer solr = null;
-
 			String solrurl = PropertyUtil.get("solr.fullexpense.url");
-
 			if ("EmbeddedSolrServer".equals(solrurl)) {
-
+				long emb_start = System.currentTimeMillis();
 				String solrhome = PropertyUtil
 						.get("solr.fullexpense.embedded.solrhome");
 				if ("".equals(solrhome)) {
 					System.out
 							.println("please set up solr.fullexpense.embedded.solrhome first.");
-
 					return;
-
 				}
 
-				// 设置嵌入式模式
+				// 设置嵌入式模式，嵌入式模式不清空，每次都会删除
 
 				//				System.setProperty("solr.solr.home", solrhome);
-
 				CoreContainer coreContainer = CoreContainer.createAndLoad(
-
-				solrhome, new File(solrhome + "/solr.xml"));
-
+						solrhome, new File(solrhome + "/solr.xml"));
 				solr = new EmbeddedSolrServer(coreContainer,
-
-				PropertyUtil.get("solr.fullexpense.embedded.core"));
-
+						PropertyUtil.get("solr.fullexpense.embedded.core"));
+				long emb_end = System.currentTimeMillis();
+				System.out.println("Embedded start:" + (emb_end - emb_start)
+						/ 1000 + "s");
 			} else {
-
 				solr = new HttpSolrServer(solrurl);
-
+				if (Boolean.parseBoolean(PropertyUtil
+						.get("solr.fullexpense.delete"))) {
+					solr.deleteByQuery("*:*");
+					solr.commit();
+				}
 			}
-
-			if (Boolean.parseBoolean(PropertyUtil
-
-			.get("solr.fullexpense.delete"))) {
-
-				solr.deleteByQuery("*:*");
-
-				solr.commit();
-
-			}
-
 			// connect to database
-
 			for (int i = startPage - 1; i < count; i++) {
-
 				// 需要判断如果是null则设置中文无
-
 				int maxRow = (i + 1) * pageSize;
-
 				int minRow = i * pageSize + 1;
-
 				System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>");
-
 				System.out.println("processing page:" + (i + 1)
-
-				+ ", start row:" + minRow + ", end row:" + maxRow);
-
+						+ ", start row:" + minRow + ", end row:" + maxRow);
 				long start = System.currentTimeMillis();
-
 				conn = JDBCUtil.getConnection();
-
 				String sql = "SELECT * FROM (SELECT A.*,ROWNUM RN FROM (select "
-
-						+ parallStr + " * from KC24) A WHERE ROWNUM<="
-
-						+ "?" + ") WHERE RN >=" + "?";
-
+						+ parallStr
+						+ " * from KC24) A WHERE ROWNUM<="
+						+ "?"
+						+ ") WHERE RN >=" + "?";
 				List<Object> param = new ArrayList<Object>();
-
 				param.add(maxRow);
-
 				param.add(minRow);
-
 				List<Map<String, Object>> result = JDBCUtil.executeQuery(sql,
-
-				conn, param);
-
+						conn, param);
 				long mid = System.currentTimeMillis();
-
+				long index_start = System.currentTimeMillis();
 				FullExpenseUtil.indexByResult(result, codeList, solr, hosList);
-
 				long end = System.currentTimeMillis();
-
+				System.out.println("index spent:" + (end - index_start) / 1000
+						+ "s");
 				System.out.println("database retrive spent:" + (mid - start)
-
-				/ 1000 + "s");
-
+						/ 1000 + "s");
 				System.out.println("total time spent:" + (end - start) / 1000
-
-				+ "s");
-
+						+ "s");
 				System.out.println("indexed docs:" + result.size());
 
 			}
@@ -242,21 +171,22 @@ public class FullExpenseIndexerSingle {
 
 			// 如果设置了cache并且是分布式处理
 			if (!"".equals(cacheDir) & !"".equals(workspace)) {
+				long cache_start = System.currentTimeMillis();
 				String destFile = workspace + FullExpenseIndexer.INDEX_DIR;
 				String srcFile = cacheDir + "/indexer" + startPage + "/solr";
 				FileUtils.moveDirectoryToDirectory(new File(srcFile), new File(
 						destFile + "/indexer" + startPage), true);
 				FileUtils.deleteQuietly(new File(cacheDir + "/indexer"
 						+ startPage));
+				long cache_end = System.currentTimeMillis();
+				System.out.println("cached writeback process :"
+						+ (cache_end - cache_start) / 1000 + "s");
 			}
 			long allend = System.currentTimeMillis();
 
 			System.out.println(">>>>>>>>>>>>>Total:"
-
-			+ ((allend - allstart) / 1000) + "s>>>>>>>>>>>");
-
+					+ ((allend - allstart) / 1000) + "s>>>>>>>>>>>");
 			System.exit(0);
-
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(-1);
