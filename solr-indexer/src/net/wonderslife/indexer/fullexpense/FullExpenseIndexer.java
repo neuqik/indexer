@@ -173,7 +173,7 @@ public class FullExpenseIndexer {
 						File script = new File(destFile + "/run.sh");
 						FileUtils.write(script, cmd);
 						script.setExecutable(true);
-						Thread.sleep(500); // 不同时打开，每隔0.5秒打开一个
+						Thread.sleep(2000); // 不同时打开，每隔2秒打开一个，避免同时产生并发压力
 						Runtime.getRuntime().exec(
 								new String[] { "cd " + destFile,
 										destFile + "/run.sh" });
@@ -196,6 +196,7 @@ public class FullExpenseIndexer {
 						File script = new File(cacheFile + "/run.sh");
 						FileUtils.write(script, cmd);
 						script.setExecutable(true);
+						Thread.sleep(2000); // 不同时打开，每隔2秒打开一个，避免同时产生并发压力
 						Runtime.getRuntime().exec(cacheFile + "/run.sh");
 						System.out.println(">>>>>>>>>> created cached process "
 								+ next);

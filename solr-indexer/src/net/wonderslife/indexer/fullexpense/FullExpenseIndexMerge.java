@@ -14,6 +14,7 @@ import net.wonderslife.util.PropertyUtil;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.IndexWriterConfig.OpenMode;
@@ -206,23 +207,11 @@ public class FullExpenseIndexMerge {
 					String to = workspace + MERGE_DIR;
 					// 如果是最后一次合并，并且是最后一个文件，则合并成一个文件
 					if (lastMerge && it.hasNext() == false) {
-						mergeIndex(
-								new File(from),
-								new File(to),
-								new ComplexAnalyzer(Dictionary
-										.getInstance(workspace + INDEX_DIR
-												+ "/indexer" + fileno
-												+ "/solr/collection1/dict")),
-								true);
+						mergeIndex(new File(from), new File(to),
+								new StandardAnalyzer(Version.LUCENE_47), true);
 					} else {
-						mergeIndex(
-								new File(from),
-								new File(to),
-								new ComplexAnalyzer(Dictionary
-										.getInstance(workspace + INDEX_DIR
-												+ "/indexer" + fileno
-												+ "/solr/collection1/dict")),
-								false);
+						mergeIndex(new File(from), new File(to),
+								new StandardAnalyzer(Version.LUCENE_47), false);
 					}
 					// 节省空间，删除jar
 					FileUtils.deleteQuietly(new File(workspace + INDEX_DIR
